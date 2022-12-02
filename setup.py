@@ -96,7 +96,6 @@ setup(
     name="Mesa",
     version=version,
     description="Agent-based modeling (ABM) in Python 3+",
-    long_description=readme,
     author="Project Mesa Team",
     author_email="projectmesa@googlegroups.com",
     url="https://github.com/projectmesa/mesa",
