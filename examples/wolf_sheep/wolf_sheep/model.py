@@ -21,7 +21,7 @@ class WolfSheep(mesa.Model):
     """
 
     height = 20
-    width = 20
+    width = 30
 
     initial_sheep = 100
     initial_wolves = 50
