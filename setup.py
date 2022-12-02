@@ -21,9 +21,6 @@ with open("mesa/__init__.py") as fd:
         r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]', fd.read(), re.MULTILINE
     ).group(1)
 
-with open("README.rst", "rb", encoding="utf-8") as f:
-    readme = f.read()
-
 # Ensure JS dependencies are downloaded
 external_dir = "mesa/visualization/templates/external"
 # We use a different path for single-file JS because some of them are loaded
