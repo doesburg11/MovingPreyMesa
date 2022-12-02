@@ -43,7 +43,7 @@ class WolfSheep(mesa.Model):
 
     def __init__(
         self,
-        width=20,
+        width=30,
         height=20,
         initial_sheep=100,
         initial_wolves=50,
