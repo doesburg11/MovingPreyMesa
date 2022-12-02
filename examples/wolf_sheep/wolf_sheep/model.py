@@ -21,7 +21,7 @@ class WolfSheep(mesa.Model):
     """
 
     height = 20
-    width = 30
+    width = 10
 
     initial_sheep = 100
     initial_wolves = 50
@@ -43,7 +43,7 @@ class WolfSheep(mesa.Model):
 
     def __init__(
         self,
-        width=30,
+        width=10,
         height=20,
         initial_sheep=100,
         initial_wolves=50,
