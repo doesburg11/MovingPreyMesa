@@ -46,6 +46,7 @@ const InteractionHandler = function (width, height, gridWidth, gridHeight, ctx) 
     "heading_y",
     "stroke_color",
     "text_color",
+    "Layer       #pd
   ];
 
   // Set a variable to hold the lookup table and make it accessible to draw scripts
