@@ -24,7 +24,6 @@ def wolf_sheep_portrayal(agent):
 
     elif type(agent) is Sheep:
         portrayal["Shape"] = "wolf_sheep/resources/sheep.png"
-        # https://icons8.com/web-app/433/sheep
         portrayal["type"] = "Prey"
         portrayal["id"] = agent.unique_id
         portrayal["age"] = agent.age
