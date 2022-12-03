@@ -14,17 +14,22 @@ def wolf_sheep_portrayal(agent):
         portrayal["Shape"] = "wolf_sheep/resources/wolf.png"
         # https://icons8.com/web-app/36821/German-Shepherd
         # portrayal["scale"] = 0.9
-        portrayal["Layer"] = 1
-        portrayal["id"] = agent.unique_id # round(agent.energy, 1)
+        portrayal["type"] = "Predator"
+        portrayal["id"] = agent.unique_id
         portrayal["energy"] = round(agent.energy, 2)
         portrayal["text_color"] = "White"
+        portrayal["Layer"] = 1
+
 
     elif type(agent) is Sheep:
         portrayal["Shape"] = "wolf_sheep/resources/sheep.png"
         # https://icons8.com/web-app/433/sheep
-        portrayal["scale"] = 0.9
+        portrayal["type"] = "Prey"
+        portrayal["id"] = agent.unique_id
+        portrayal["energy"] = round(agent.energy, 2)
+        # portrayal["scale"] = 0.9
         portrayal["Layer"] = 1
-        portrayal["text"] = agent.unique_id
+
 
 
     elif type(agent) is GrassPatch:
