@@ -23,6 +23,7 @@ def wolf_sheep_portrayal(agent):
         portrayal["scale"] = 0.9
         portrayal["Layer"] = 2
         portrayal["text"] = agent.unique_id # round(agent.energy, 1)
+        portrayal["text1"] = "text1" # round(agent.energy, 1)
         portrayal["text_color"] = "White"
 
     elif type(agent) is GrassPatch:
