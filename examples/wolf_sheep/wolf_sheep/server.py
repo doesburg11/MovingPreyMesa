@@ -13,8 +13,8 @@ def wolf_sheep_portrayal(agent):
     if type(agent) is Wolf:
         portrayal["Shape"] = "wolf_sheep/resources/wolf.png"
         # https://icons8.com/web-app/36821/German-Shepherd
-        #portrayal["scale"] = 0.9
-        portrayal["Layer"] = 3
+        # portrayal["scale"] = 0.9
+        portrayal["Layer"] = 1
         portrayal["id"] = agent.unique_id # round(agent.energy, 1)
         portrayal["energy"] = round(agent.energy, 2)
         portrayal["text_color"] = "White"
@@ -23,7 +23,7 @@ def wolf_sheep_portrayal(agent):
         portrayal["Shape"] = "wolf_sheep/resources/sheep.png"
         # https://icons8.com/web-app/433/sheep
         portrayal["scale"] = 0.9
-        portrayal["Layer"] = 2
+        portrayal["Layer"] = 1
         portrayal["text"] = agent.unique_id
 
 
