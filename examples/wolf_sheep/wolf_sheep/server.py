@@ -16,6 +16,7 @@ def wolf_sheep_portrayal(agent):
         # portrayal["scale"] = 0.9
         portrayal["type"] = "Predator"
         portrayal["id"] = agent.unique_id
+        portrayal["age"] = agent.age
         portrayal["energy"] = round(agent.energy, 2)
         portrayal["text_color"] = "White"
         portrayal["Layer"] = 1
@@ -26,6 +27,7 @@ def wolf_sheep_portrayal(agent):
         # https://icons8.com/web-app/433/sheep
         portrayal["type"] = "Prey"
         portrayal["id"] = agent.unique_id
+        portrayal["age"] = agent.age
         portrayal["energy"] = round(agent.energy, 2)
         # portrayal["scale"] = 0.9
         portrayal["Layer"] = 1

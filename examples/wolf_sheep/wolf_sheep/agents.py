@@ -14,17 +14,20 @@ class Sheep(RandomWalker):
     def __init__(self, unique_id, pos, model, moore, energy=None):
         super().__init__(unique_id, pos, model, moore=moore)
         self.energy = energy
+        self.age = 0
 
     def step(self):
         """
-        A model step. Move, then eat grass and reproduce.
+        A model step. Move, ages, then eat grass and reproduce.
         """
         self.random_move()
+        self.age += 1
         living = True
 
         if self.model.grass:
             # Reduce energy
             self.energy -= 1
+
 
             # If there is grass available, eat it
             this_cell = self.model.grid.get_cell_list_contents([self.pos])
@@ -60,9 +63,11 @@ class Wolf(RandomWalker):
     def __init__(self, unique_id, pos, model, moore, energy=None):
         super().__init__(unique_id, pos, model, moore=moore)
         self.energy = energy
+        self.age = 0
 
     def step(self):
         self.random_move()
+        self.age += 1
         self.energy -= 1
 
         # If there are sheep present, eat one
