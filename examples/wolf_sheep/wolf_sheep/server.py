@@ -22,7 +22,7 @@ def wolf_sheep_portrayal(agent):
         # https://icons8.com/web-app/36821/German-Shepherd
         portrayal["scale"] = 0.9
         portrayal["Layer"] = 2
-        portrayal["text"] = 1 # round(agent.energy, 1)
+        portrayal["text"] = agent.unique_id # round(agent.energy, 1)
         portrayal["text_color"] = "White"
 
     elif type(agent) is GrassPatch:
