@@ -10,21 +10,22 @@ def wolf_sheep_portrayal(agent):
 
     portrayal = {}
 
-    if type(agent) is Sheep:
+    if type(agent) is Wolf:
+        portrayal["Shape"] = "wolf_sheep/resources/wolf.png"
+        # https://icons8.com/web-app/36821/German-Shepherd
+        #portrayal["scale"] = 0.9
+        portrayal["Layer"] = 0
+        portrayal["id"] = agent.unique_id # round(agent.energy, 1)
+        portrayal["energy"] = round(agent.energy, 2)
+        portrayal["text_color"] = "White"
+
+    elif type(agent) is Sheep:
         portrayal["Shape"] = "wolf_sheep/resources/sheep.png"
         # https://icons8.com/web-app/433/sheep
         portrayal["scale"] = 0.9
         portrayal["Layer"] = 1
         portrayal["text"] = agent.unique_id
 
-    elif type(agent) is Wolf:
-        portrayal["Shape"] = "wolf_sheep/resources/wolf.png"
-        # https://icons8.com/web-app/36821/German-Shepherd
-        #portrayal["scale"] = 0.9
-        portrayal["Layer"] = 2
-        portrayal["id"] = agent.unique_id # round(agent.energy, 1)
-        portrayal["energy"] = round(agent.energy, 2)
-        portrayal["text_color"] = "White"
 
     elif type(agent) is GrassPatch:
         if agent.fully_grown:
@@ -33,7 +34,7 @@ def wolf_sheep_portrayal(agent):
             portrayal["Color"] = ["#84e184", "#adebad", "#d6f5d6"]
         portrayal["Shape"] = "rect"
         portrayal["Filled"] = "true"
-        portrayal["Layer"] = 0
+        portrayal["Layer"] = 2
         portrayal["w"] = 1
         portrayal["h"] = 1
 
