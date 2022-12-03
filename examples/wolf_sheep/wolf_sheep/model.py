@@ -92,6 +92,14 @@ class WolfSheep(mesa.Model):
                 ),
             }
         )
+        # Create wolves
+        for i in range(self.initial_wolves):
+            x = self.random.randrange(self.width)
+            y = self.random.randrange(self.height)
+            energy = self.random.randrange(2 * self.wolf_gain_from_food)
+            wolf = Wolf(self.next_id(), (x, y), self, True, energy)
+            self.grid.place_agent(wolf, (x, y))
+            self.schedule.add(wolf)
 
         # Create sheep:
         for i in range(self.initial_sheep):
@@ -102,14 +110,6 @@ class WolfSheep(mesa.Model):
             self.grid.place_agent(sheep, (x, y))
             self.schedule.add(sheep)
 
-        # Create wolves
-        for i in range(self.initial_wolves):
-            x = self.random.randrange(self.width)
-            y = self.random.randrange(self.height)
-            energy = self.random.randrange(2 * self.wolf_gain_from_food)
-            wolf = Wolf(self.next_id(), (x, y), self, True, energy)
-            self.grid.place_agent(wolf, (x, y))
-            self.schedule.add(wolf)
 
         # Create grass patches
         if self.grass:
