@@ -33,6 +33,7 @@ def wolf_sheep_portrayal(agent):
         portrayal["Color"] = ["#0000FF", "#9999FF"]
         portrayal["stroke_color"] = "#000000"
 
+
         portrayal["type"] = "Prey"
         portrayal["id"] = agent.unique_id
         portrayal["age"] = agent.age
