@@ -13,7 +13,7 @@ def wolf_sheep_portrayal(agent):
     if type(agent) is Wolf:
         # agent shape
         portrayal["Shape"] = "circle" # "wolf_sheep/resources/wolf.png"
-        portrayal["r"] = 0.5
+        portrayal["r"] = 0.8
         portrayal["Filled"] = "true"
         portrayal["Color"] = ["#FF0000", "#FF9999"]
         portrayal["stroke_color"] = "#00FF00"
