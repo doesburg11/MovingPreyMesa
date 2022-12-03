@@ -11,9 +11,14 @@ def wolf_sheep_portrayal(agent):
     portrayal = {}
 
     if type(agent) is Wolf:
-        portrayal["Shape"] = "wolf_sheep/resources/wolf.png"
-        # https://icons8.com/web-app/36821/German-Shepherd
-        # portrayal["scale"] = 0.9
+        # agent shape
+        portrayal["Shape"] = "circle" # "wolf_sheep/resources/wolf.png"
+        portrayal["r"] = 0.5
+        portrayal["Filled"] = "true"
+        portrayal["Color"] = ["#FF0000", "#FF9999"]
+        portrayal["stroke_color"] = "#00FF00"
+
+        # tooltip
         portrayal["type"] = "Predator"
         portrayal["id"] = agent.unique_id
         portrayal["age"] = agent.age
@@ -21,9 +26,13 @@ def wolf_sheep_portrayal(agent):
         portrayal["text_color"] = "White"
         portrayal["Layer"] = 1
 
-
     elif type(agent) is Sheep:
-        portrayal["Shape"] = "wolf_sheep/resources/sheep.png"
+        portrayal["Shape"] = "circle"
+        portrayal["r"] = 0.5
+        portrayal["Filled"] = "true"
+        portrayal["Color"] = ["#0000FF", "#9999FF"]
+        portrayal["stroke_color"] = "#000000"
+
         portrayal["type"] = "Prey"
         portrayal["id"] = agent.unique_id
         portrayal["age"] = agent.age
