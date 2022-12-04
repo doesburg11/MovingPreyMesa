@@ -269,6 +269,8 @@ class RandomActivationByType(BaseScheduler):
             self.model.random.shuffle(type_keys)
         for agent_class in type_keys:
             self.step_type(agent_class, shuffle_agents=shuffle_agents)
+            print("agent_type")
+            print(agent_class)
         self.steps += 1
         self.time += 1
 
