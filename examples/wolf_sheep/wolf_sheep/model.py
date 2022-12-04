@@ -38,7 +38,7 @@ class WolfSheep(mesa.Model):
     verbose = True  # Print-monitoring
 
     description = (
-        "A model for simulating wolf and sheep (predator-prey) ecosystem modelling."
+        "A model for simulating Predator-Prey ecosystem modelling."
     )
 
     def __init__(
@@ -136,6 +136,7 @@ class WolfSheep(mesa.Model):
         if self.verbose:
             print(
                 [
+                    # pd: add info
                     self.schedule.time,
                     self.schedule.get_type_count(Wolf),
                     self.schedule.get_type_count(Sheep),
