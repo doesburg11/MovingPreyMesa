@@ -20,7 +20,7 @@ class Sheep(RandomWalker):
         """
         A model step. Move, ages, then eat grass and reproduce.
         """
-        print("prey_"+self.unique_id)
+        print("prey_"+str(self.unique_id))
         self.random_move()
         self.age += 1
         living = True
@@ -67,7 +67,7 @@ class Wolf(RandomWalker):
         self.age = 0
 
     def step(self):
-        print("predator_" + self.unique_id)
+        print("predator_" + str(self.unique_id))
         self.random_move()
         self.age += 1
         self.energy -= 1
