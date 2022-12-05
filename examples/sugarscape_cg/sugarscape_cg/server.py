@@ -11,7 +11,7 @@ def SsAgent_portrayal(agent):
         return
 
     if type(agent) is SsAgent:
-        return {"Shape": "sugarscape_cg/resources/ant.png", "scale": 0.9, "Layer": 1}
+        return {"Shape": "sugarscape_cg/resources_pd/ant.png", "scale": 0.9, "Layer": 1}
 
     elif type(agent) is Sugar:
         if agent.amount != 0:

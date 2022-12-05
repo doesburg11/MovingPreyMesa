@@ -31,3 +31,6 @@ Not all agents reshuffled together that is.
  This is probably initiated by:
 /home/doesburg/DataspellProjects/mesa_pd/mesa/time.py
 and step_type() and step()
+
+To do:
+Top bar color: #0C3C60

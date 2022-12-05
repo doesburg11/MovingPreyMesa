@@ -12,6 +12,6 @@ services:
     volumes:
       - .:/opt/mesa
     environment:
-      MODEL_DIR: examples/wolf_sheep
+      MODEL_DIR: examples/predator_prey
     ports:
       - "127.0.0.1:8521:8521"

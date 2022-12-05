@@ -3,6 +3,12 @@ import mesa
 from predator_prey.agents import Wolf, Sheep, GrassPatch
 from predator_prey.model import WolfSheep
 
+#
+initial_sheep = 10
+initial_wolves = 5
+grid_with = 10
+grid_height = 10
+
 
 def wolf_sheep_portrayal(agent):
     if agent is None:
@@ -57,7 +63,7 @@ def wolf_sheep_portrayal(agent):
     return portrayal
 
 
-canvas_element = mesa.visualization.CanvasGrid(wolf_sheep_portrayal, 20, 20, 500, 500)
+canvas_element = mesa.visualization.CanvasGrid(wolf_sheep_portrayal, grid_with, grid_height, 500, 500)
 chart_element = mesa.visualization.ChartModule(
     [
         {"Label": "Wolves", "Color": "#AA0000"},
@@ -69,15 +75,16 @@ chart_element = mesa.visualization.ChartModule(
 model_params = {
     # The following line is an example to showcase StaticText.
     "title": mesa.visualization.StaticText("Parameters:"),
+    "initial_wolves": mesa.visualization.Slider("Initial Wolf Population", initial_wolves, 0, 300),
+    "initial_sheep": mesa.visualization.Slider(
+        "Initial Sheep Population", initial_sheep, 0, 300
+    ),
     "grass": mesa.visualization.Checkbox("Grass Enabled", True),
     "grass_regrowth_time": mesa.visualization.Slider("Grass Regrowth Time", 20, 1, 50),
-    "initial_sheep": mesa.visualization.Slider(
-        "Initial Sheep Population", 100, 10, 300
-    ),
+
     "sheep_reproduce": mesa.visualization.Slider(
         "Sheep Reproduction Rate", 0.04, 0.01, 1.0, 0.01
     ),
-    "initial_wolves": mesa.visualization.Slider("Initial Wolf Population", 50, 10, 300),
     "wolf_reproduce": mesa.visualization.Slider(
         "Wolf Reproduction Rate",
         0.05,
