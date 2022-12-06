@@ -33,7 +33,7 @@ cd /home/doesburg/DataspellProjects/mesa_pd
 kill -9 $(ps -A | grep python | awk '{print $1}')
 ```
 ```bash
-mesa runserver examples/wolf_sheep
+mesa runserver predator_prey
 ```
 
 The scheduler first outputs all Predators reshuffled and then all Prey reshuffled.
