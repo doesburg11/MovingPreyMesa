@@ -1,5 +1,6 @@
 Install Mesa:
 <a name="install">Install Mesa</a>
+Linux boot:
 ```bash
 conda activate mesa_pd
 pip install git+https://github.com/doesburg11/mesa_pd.git
@@ -8,6 +9,12 @@ cd /home/doesburg/DataspellProjects/mesa_pd
 kill -9 $(ps -A | grep python | awk '{print $1}')
 mesa runserver predator_prey
 ```
+Windows boot:
+
+cd C:\Users\peter\OneDrive\python\pd\mesa_pd_env\Scripts
+source activates
+
+cd C:\Users\peter\DataspellProjects\mesa_pd
 
 ```bash
 conda activate mesa_pd
