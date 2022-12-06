@@ -10,12 +10,15 @@ kill -9 $(ps -A | grep python | awk '{print $1}')
 mesa runserver predator_prey
 ```
 Windows boot:
-
+```bash
 cd C:\Users\peter\OneDrive\python\pd\mesa_pd_env\Scripts
-source activates
-
+.\activate
+pip install git+https://github.com/doesburg11/mesa_pd.git
 cd C:\Users\peter\DataspellProjects\mesa_pd
+mesa runserver predator_prey
+```
 
+Linux boot line by line:
 ```bash
 conda activate mesa_pd
 ```
