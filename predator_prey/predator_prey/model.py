@@ -90,14 +90,13 @@ class WolfSheep(mesa.Model):
             self.schedule = RandomActivationByTypeFiltered(self)
             self.datacollector = mesa.DataCollector(
                 {
-                    "Wolves": lambda m: m.schedule.get_agent_count(),
-                    "Sheep": lambda m: m.schedule.get_agent_count(),
-                    "Grass": lambda m: m.schedule.get_agent_count(),
+                    "Wolves": lambda m: m.schedule.get_type_count(),
+                    "Sheep": lambda m: m.schedule.get_type_count(),
+                    "Grass": lambda m: m.schedule.get_type_count(),
                 }
             )
         else: # pd is fullly random activated regardless of agent typet
 
-            print()
             self.schedule = RandomActivation(self)
 
             self.datacollector = mesa.DataCollector(  #pd
