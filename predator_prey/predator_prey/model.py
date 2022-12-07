@@ -11,6 +11,7 @@ Replication of the model found in NetLogo:
 
 import mesa
 
+from mesa.time import BaseScheduler, RandomActivationByType  #pd
 from predator_prey.scheduler import RandomActivationByTypeFiltered
 from predator_prey.agents import Sheep, Wolf, GrassPatch
 
@@ -35,7 +36,10 @@ class WolfSheep(mesa.Model):
     grass_regrowth_time = 30
     sheep_gain_from_food = 4
 
-    verbose = True  # Print-monitoring
+    verbose = False  # Print-monitoring
+
+    is_per_type_random_activated = False    # pd: agent are all random activated regardless of type,
+                                            # if False agents are ramdom per type and random per class
 
     description = (
         "A model for simulating Predator-Prey ecosystem modelling."
@@ -81,18 +85,29 @@ class WolfSheep(mesa.Model):
         self.grass_regrowth_time = grass_regrowth_time
         self.sheep_gain_from_food = sheep_gain_from_food
 
-        self.schedule = RandomActivationByTypeFiltered(self)
         self.grid = mesa.space.MultiGrid(self.width, self.height, torus=True)
-        self.datacollector = mesa.DataCollector(
-            {
-                "Wolves": lambda m: m.schedule.get_type_count(Wolf),
-                "Sheep": lambda m: m.schedule.get_type_count(Sheep),
-                "Grass": lambda m: m.schedule.get_type_count(
-                    GrassPatch, lambda x: x.fully_grown
-                ),
-            }
-        )
-        # Create wolves
+        if self.is_per_type_random_activated:
+            self.schedule = RandomActivationByTypeFiltered(self)
+            self.datacollector = mesa.DataCollector(
+                {
+                    "Wolves": lambda m: m.schedule.get_agent_count(),
+                    "Sheep": lambda m: m.schedule.get_agent_count(),
+                    "Grass": lambda m: m.schedule.get_agent_count(),
+                }
+            )
+        else: # pd is fullly random activated regardless of agent type
+            self.schedule = RandomActivationByType(self)
+            self.datacollector = mesa.DataCollector(  #pd
+                {
+                    "Wolves": lambda m: m.schedule.get_type_count(Wolf),
+                    "Sheep": lambda m: m.schedule.get_type_count(Sheep),
+                    "Grass": lambda m: m.schedule.get_type_count(
+                        GrassPatch
+                    ),
+                }
+            )
+
+    # Create wolves
         for i in range(self.initial_wolves):
             x = self.random.randrange(self.width)
             y = self.random.randrange(self.height)
@@ -131,7 +146,8 @@ class WolfSheep(mesa.Model):
 
     def step(self):
         self.schedule.step()
-        # collect data
+
+    # collect data
         self.datacollector.collect(self)
         if self.verbose:
             print(
