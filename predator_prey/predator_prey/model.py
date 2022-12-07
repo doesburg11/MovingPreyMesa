@@ -101,9 +101,7 @@ class WolfSheep(mesa.Model):
                 {
                     "Wolves": lambda m: m.schedule.get_type_count(Wolf),
                     "Sheep": lambda m: m.schedule.get_type_count(Sheep),
-                    "Grass": lambda m: m.schedule.get_type_count(
-                        GrassPatch
-                    ),
+                    "Grass": lambda m: m.schedule.get_type_count(GrassPatch),
                 }
             )
 
