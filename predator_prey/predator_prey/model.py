@@ -11,7 +11,7 @@ Replication of the model found in NetLogo:
 
 import mesa
 
-from mesa.time import BaseScheduler, RandomActivationByType  #pd
+from mesa.time import BaseScheduler, RandomActivation  #pd
 from predator_prey.scheduler import RandomActivationByTypeFiltered
 from predator_prey.agents import Sheep, Wolf, GrassPatch
 
@@ -95,15 +95,19 @@ class WolfSheep(mesa.Model):
                     "Grass": lambda m: m.schedule.get_agent_count(),
                 }
             )
-        else: # pd is fullly random activated regardless of agent type
-            self.schedule = RandomActivationByType(self)
+        else: # pd is fullly random activated regardless of agent typet
+
+            print()
+            self.schedule = RandomActivation(self)
+
             self.datacollector = mesa.DataCollector(  #pd
                 {
-                    "Wolves": lambda m: m.schedule.get_type_count(Wolf),
-                    "Sheep": lambda m: m.schedule.get_type_count(Sheep),
-                    "Grass": lambda m: m.schedule.get_type_count(GrassPatch),
+                    "Wolves": lambda m: m.schedule.get_agent_count(),
+                    "Sheep": lambda m: m.schedule.get_agent_count(),
+                    "Grass": lambda m: m.schedule.get_agent_count(),
                 }
             )
+
 
     # Create wolves
         for i in range(self.initial_wolves):
@@ -140,7 +144,7 @@ class WolfSheep(mesa.Model):
                 self.schedule.add(patch)
 
         self.running = True
-        self.datacollector.collect(self)
+        #self.datacollector.collect(self)
 
     def step(self):
         self.schedule.step()
