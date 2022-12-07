@@ -1,5 +1,7 @@
-Install Mesa:
+### Install Mesa:
+
 <a name="install">Install Mesa</a>
+
 Linux boot:
 ```bash
 conda activate mesa_pd
