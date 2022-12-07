@@ -1,5 +1,8 @@
-Install Mesa:
+### Install Mesa:
+
 <a name="install">Install Mesa</a>
+
+Linux boot:
 ```bash
 conda activate mesa_pd
 pip install git+https://github.com/doesburg11/mesa_pd.git
@@ -8,7 +11,16 @@ cd /home/doesburg/DataspellProjects/mesa_pd
 kill -9 $(ps -A | grep python | awk '{print $1}')
 mesa runserver predator_prey
 ```
+Windows boot:
+```bash
+cd C:\Users\peter\OneDrive\python\pd\mesa_pd_env\Scripts
+.\activate
+pip install git+https://github.com/doesburg11/mesa_pd.git
+cd C:\Users\peter\DataspellProjects\mesa_pd
+mesa runserver predator_prey
+```
 
+Linux boot line by line:
 ```bash
 conda activate mesa_pd
 ```
@@ -23,7 +35,7 @@ cd /home/doesburg/DataspellProjects/mesa_pd
 kill -9 $(ps -A | grep python | awk '{print $1}')
 ```
 ```bash
-mesa runserver examples/wolf_sheep
+mesa runserver predator_prey
 ```
 
 The scheduler first outputs all Predators reshuffled and then all Prey reshuffled.
