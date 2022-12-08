@@ -35,10 +35,7 @@ class WolfSheep(mesa.Model):
     grass_regrowth_time = 30
     sheep_gain_from_food = 4
 
-    verbose = 1
-    """ 
-    1 = number of agents per step
-    """
+    verbose = True
 
     is_per_type_random_activated = False    # pd: agent are all random activated regardless of type,
                                             # if False agents are ramdom per type and random per class
@@ -94,7 +91,7 @@ class WolfSheep(mesa.Model):
                 {
                     "Wolves": lambda m: m.schedule.get_type_count(Wolf),
                     "Sheep": lambda m: m.schedule.get_type_count(Sheep),
-                    "Grass": lambda m: m.schedule.get_type_count(GrassPatch),
+                    "Grass": lambda m: m.schedule.get_type_count(GrassPatch, lambda x: x.fully_grown),
                 }
             )
         else: # pd is fullly random activated regardless of agent typet
@@ -103,9 +100,9 @@ class WolfSheep(mesa.Model):
 
             self.datacollector = mesa.DataCollector(  #pd
                 {
-                    "Wolves": lambda m: m.schedule.get_agent_count(),
-                    "Sheep": lambda m: m.schedule.get_agent_count(),
-                    "Grass": lambda m: m.schedule.get_agent_count(),
+                    "Wolves": lambda m: m.schedule.get_type_count(Wolf),
+                    "Sheep": lambda m: m.schedule.get_type_count(Sheep),
+                    "Grass": lambda m: m.schedule.get_type_count(GrassPatch, lambda x: x.fully_grown),
                 }
             )
 
@@ -145,17 +142,15 @@ class WolfSheep(mesa.Model):
                 self.schedule.add(patch)
 
         self.running = True
-        #self.datacollector.collect(self)
+        self.datacollector.collect(self)
 
     def step(self):
         self.schedule.step()
-
-    # collect data
+        # collect data
         self.datacollector.collect(self)
-        if self.verbose==1:
+        if self.verbose:
             print(
                 [
-                    # pd: add info
                     self.schedule.time,
                     self.schedule.get_type_count(Wolf),
                     self.schedule.get_type_count(Sheep),
@@ -165,7 +160,7 @@ class WolfSheep(mesa.Model):
 
     def run_model(self, step_count=200):
 
-        if self.verbose==1:
+        if self.verbose:
             print("Initial number wolves: ", self.schedule.get_type_count(Wolf))
             print("Initial number sheep: ", self.schedule.get_type_count(Sheep))
             print(
@@ -176,7 +171,7 @@ class WolfSheep(mesa.Model):
         for i in range(step_count):
             self.step()
 
-        if self.verbose==1:
+        if self.verbose:
             print("")
             print("Final number wolves: ", self.schedule.get_type_count(Wolf))
             print("Final number sheep: ", self.schedule.get_type_count(Sheep))
