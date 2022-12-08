@@ -36,7 +36,7 @@ class WolfSheep(mesa.Model):
     grass_regrowth_time = 30
     sheep_gain_from_food = 4
 
-    verbose = False  # Print-monitoring
+    verbose = True  # Print-monitoring
 
     is_per_type_random_activated = False    # pd: agent are all random activated regardless of type,
                                             # if False agents are ramdom per type and random per class
@@ -90,9 +90,9 @@ class WolfSheep(mesa.Model):
             self.schedule = RandomActivationByTypeFiltered(self)
             self.datacollector = mesa.DataCollector(
                 {
-                    "Wolves": lambda m: m.schedule.get_type_count(),
-                    "Sheep": lambda m: m.schedule.get_type_count(),
-                    "Grass": lambda m: m.schedule.get_type_count(),
+                    "Wolves": lambda m: m.schedule.get_type_count(Wolf),
+                    "Sheep": lambda m: m.schedule.get_type_count(Sheep),
+                    "Grass": lambda m: m.schedule.get_type_count(GrassPatch),
                 }
             )
         else: # pd is fullly random activated regardless of agent typet
