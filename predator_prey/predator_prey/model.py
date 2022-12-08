@@ -38,7 +38,6 @@ class WolfSheep(mesa.Model):
     verbose = 1
     """ 
     1 = number of agents per step
-    2 = print activated agent within step
     """
 
     is_per_type_random_activated = False    # pd: agent are all random activated regardless of type,
@@ -166,7 +165,7 @@ class WolfSheep(mesa.Model):
 
     def run_model(self, step_count=200):
 
-        if self.verbose==0:
+        if self.verbose==1:
             print("Initial number wolves: ", self.schedule.get_type_count(Wolf))
             print("Initial number sheep: ", self.schedule.get_type_count(Sheep))
             print(
@@ -181,7 +180,6 @@ class WolfSheep(mesa.Model):
             print("")
             print("Final number wolves: ", self.schedule.get_type_count(Wolf))
             print("Final number sheep: ", self.schedule.get_type_count(Sheep))
-            print(
-                "Final number grass: ",
+            print("Final number grass: ",
                 self.schedule.get_type_count(GrassPatch, lambda x: x.fully_grown),
             )

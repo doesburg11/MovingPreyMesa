@@ -19,7 +19,7 @@ class Sheep(RandomWalker):
         """
         A model step. Moves, ages, then eat grass and reproduce.
         """
-        print("prey_"+str(self.unique_id))
+        #print("prey_"+str(self.unique_id))
         self.random_move()
         self.age += 1
         living = True
@@ -66,7 +66,7 @@ class Wolf(RandomWalker):
         self.age = 0
 
     def step(self):
-        print("predator_" + str(self.unique_id))
+        #print("predator_" + str(self.unique_id))
         self.random_move()
         self.age += 1
         self.energy -= 1
@@ -117,7 +117,7 @@ class GrassPatch(mesa.Agent):
         self.pos = pos
 
     def step(self):
-        print("grass_" + str(self.unique_id))
+        #print("grass_" + str(self.unique_id))
         if not self.fully_grown:
             if self.countdown <= 0:
                 # Set as fully grown
