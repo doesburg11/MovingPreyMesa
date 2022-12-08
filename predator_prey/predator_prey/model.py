@@ -11,8 +11,7 @@ Replication of the model found in NetLogo:
 
 import mesa
 
-from mesa.time import BaseScheduler, RandomActivation  #pd
-from predator_prey.scheduler import RandomActivationByTypeFiltered
+from predator_prey.scheduler import RandomActivationByTypeFiltered, RandomActivationMixedTypes
 from predator_prey.agents import Sheep, Wolf, GrassPatch
 
 
@@ -36,7 +35,11 @@ class WolfSheep(mesa.Model):
     grass_regrowth_time = 30
     sheep_gain_from_food = 4
 
-    verbose = True  # Print-monitoring
+    verbose = 1
+    """ 
+    1 = number of agents per step
+    2 = print activated agent within step
+    """
 
     is_per_type_random_activated = False    # pd: agent are all random activated regardless of type,
                                             # if False agents are ramdom per type and random per class
@@ -97,7 +100,7 @@ class WolfSheep(mesa.Model):
             )
         else: # pd is fullly random activated regardless of agent typet
 
-            self.schedule = RandomActivation(self)
+            self.schedule = RandomActivationMixedTypes(self)
 
             self.datacollector = mesa.DataCollector(  #pd
                 {
@@ -108,7 +111,7 @@ class WolfSheep(mesa.Model):
             )
 
 
-    # Create wolves
+        # Create wolves
         for i in range(self.initial_wolves):
             x = self.random.randrange(self.width)
             y = self.random.randrange(self.height)
@@ -150,7 +153,7 @@ class WolfSheep(mesa.Model):
 
     # collect data
         self.datacollector.collect(self)
-        if self.verbose:
+        if self.verbose==1:
             print(
                 [
                     # pd: add info
@@ -163,7 +166,7 @@ class WolfSheep(mesa.Model):
 
     def run_model(self, step_count=200):
 
-        if self.verbose:
+        if self.verbose==0:
             print("Initial number wolves: ", self.schedule.get_type_count(Wolf))
             print("Initial number sheep: ", self.schedule.get_type_count(Sheep))
             print(
@@ -174,7 +177,7 @@ class WolfSheep(mesa.Model):
         for i in range(step_count):
             self.step()
 
-        if self.verbose:
+        if self.verbose==1:
             print("")
             print("Final number wolves: ", self.schedule.get_type_count(Wolf))
             print("Final number sheep: ", self.schedule.get_type_count(Sheep))
