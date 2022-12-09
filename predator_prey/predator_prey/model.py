@@ -87,25 +87,17 @@ class WolfSheep(mesa.Model):
         self.grid = mesa.space.MultiGrid(self.width, self.height, torus=True)
         if self.is_per_type_random_activated:
             self.schedule = RandomActivationByTypeFiltered(self)
-            self.datacollector = mesa.DataCollector(
-                {
-                    "Wolves": lambda m: m.schedule.get_type_count(Wolf),
-                    "Sheep": lambda m: m.schedule.get_type_count(Sheep),
-                    "Grass": lambda m: m.schedule.get_type_count(GrassPatch, lambda x: x.fully_grown),
-                }
-            )
-        else: # pd is fullly random activated regardless of agent typet
-
+        else: # pd is fullly random activated regardless of agent type
             self.schedule = RandomActivationMixedTypes(self)
-
-            self.datacollector = mesa.DataCollector(  #pd
-                {
-                    "Wolves": lambda m: m.schedule.get_type_count(Wolf),
-                    "Sheep": lambda m: m.schedule.get_type_count(Sheep),
-                    "Grass": lambda m: m.schedule.get_type_count(GrassPatch, lambda x: x.fully_grown),
-                }
-            )
-
+        self.datacollector = mesa.DataCollector(
+            {
+                "Wolves": lambda m: m.schedule.get_type_count(Wolf),
+                "Sheep": lambda m: m.schedule.get_type_count(Sheep),
+                "Grass": lambda m: m.schedule.get_type_count(GrassPatch, lambda x: x.fully_grown),
+            }
+        )
+        print(self.datacollector.model_vars["Wolves"])
+        print(self.datacollector.model_reporters)
 
         # Create wolves
         for i in range(self.initial_wolves):
@@ -125,13 +117,10 @@ class WolfSheep(mesa.Model):
             self.grid.place_agent(sheep, (x, y))
             self.schedule.add(sheep)
 
-
         # Create grass patches
         if self.grass:
             for agent, x, y in self.grid.coord_iter():
-
                 fully_grown = self.random.choice([True, False])
-
                 if fully_grown:
                     countdown = self.grass_regrowth_time
                 else:
@@ -156,6 +145,7 @@ class WolfSheep(mesa.Model):
                     self.schedule.get_type_count(Sheep),
                     self.schedule.get_type_count(GrassPatch, lambda x: x.fully_grown),
                 ]
+
             )
 
     def run_model(self, step_count=200):
@@ -163,10 +153,8 @@ class WolfSheep(mesa.Model):
         if self.verbose:
             print("Initial number wolves: ", self.schedule.get_type_count(Wolf))
             print("Initial number sheep: ", self.schedule.get_type_count(Sheep))
-            print(
-                "Initial number grass: ",
-                self.schedule.get_type_count(GrassPatch, lambda x: x.fully_grown),
-            )
+            print("Initial number grass: ",
+                self.schedule.get_type_count(GrassPatch, lambda x: x.fully_grown))
 
         for i in range(step_count):
             self.step()
