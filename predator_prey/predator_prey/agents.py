@@ -1,6 +1,7 @@
 import mesa
 from predator_prey.random_walk import RandomWalker
 
+
 class Sheep(RandomWalker):
     """
     A sheep that walks around, reproduces (asexually) and gets eaten.
@@ -14,12 +15,13 @@ class Sheep(RandomWalker):
         super().__init__(unique_id, pos, model, moore=moore)
         self.energy = energy
         self.age = 0
+        self.death_age: integer = None
 
     def step(self):
         """
         A model step. Moves, ages, then eat grass and reproduce.
         """
-        #print("prey_"+str(self.unique_id))
+        # print("prey_"+str(self.unique_id))
         self.random_move()
         self.age += 1
         living = True
@@ -27,7 +29,6 @@ class Sheep(RandomWalker):
         if self.model.grass:
             # Reduce energy
             self.energy -= 1
-
 
             # If there is grass available, eat it
             this_cell = self.model.grid.get_cell_list_contents([self.pos])
@@ -64,9 +65,10 @@ class Wolf(RandomWalker):
         super().__init__(unique_id, pos, model, moore=moore)
         self.energy = energy
         self.age = 0
+        self.death_age: integer = None
 
     def step(self):
-        #print("predator_" + str(self.unique_id))
+        # print("predator_" + str(self.unique_id))
         self.random_move()
         self.age += 1
         self.energy -= 1
@@ -76,15 +78,20 @@ class Wolf(RandomWalker):
         this_cell = self.model.grid.get_cell_list_contents([self.pos])
         sheep = [obj for obj in this_cell if isinstance(obj, Sheep)]
         if len(sheep) > 0:
+            # eat random sheep
+            #TODO: eat sheep with most energy or weakest sheep if sheep can resist?
             sheep_to_eat = self.random.choice(sheep)
             self.energy += self.model.wolf_gain_from_food
 
             # Kill the sheep
+            sheep_to_eat.death_age = sheep_to_eat.age #TODO: add death_age to record for sheep
             self.model.grid.remove_agent(sheep_to_eat)
             self.model.schedule.remove(sheep_to_eat)
 
+
         # Death or reproduction
         if self.energy < 0:
+            self.death_age = self.age
             self.model.grid.remove_agent(self)
             self.model.schedule.remove(self)
         else:
@@ -117,7 +124,7 @@ class GrassPatch(mesa.Agent):
         self.pos = pos
 
     def step(self):
-        #print("grass_" + str(self.unique_id))
+        # print("grass_" + str(self.unique_id))
         if not self.fully_grown:
             if self.countdown <= 0:
                 # Set as fully grown
