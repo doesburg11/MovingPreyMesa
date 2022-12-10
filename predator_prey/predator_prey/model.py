@@ -89,17 +89,17 @@ class WolfSheep(mesa.Model):
             self.schedule = RandomActivationByTypeFiltered(self)
         else: # pd is fullly random activated regardless of agent type
             self.schedule = RandomActivationMixedTypes(self)
-        self.datacollector = mesa.DataCollector(
+        self.datacollector = mesa.DataCollector(model_reporters=
             {
                 "Wolves": lambda m: m.schedule.get_type_count(Wolf),
                 "Sheep": lambda m: m.schedule.get_type_count(Sheep),
                 "Grass": lambda m: m.schedule.get_type_count(GrassPatch, lambda x: x.fully_grown),
-            }, {"unique_id" : lambda a:a.age},
+            }, agent_reporters={"unique_id" : lambda a:a.age},
 
         )
 
         #print(self.datacollector.model_vars["Wolves"])
-        #print(self.datacollector.model_reporters)
+        print(self.datacollector.get_agent_vars_dataframe())
 
         # Create wolves
         for i in range(self.initial_wolves):
@@ -134,11 +134,14 @@ class WolfSheep(mesa.Model):
 
         self.running = True
         self.datacollector.collect(self)
+        print()
 
     def step(self):
         self.schedule.step()
         # collect data
         self.datacollector.collect(self)
+        print(self.datacollector.get_model_vars_dataframe())
+
         if self.verbose:
             print(
                 [
