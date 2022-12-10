@@ -15,7 +15,7 @@ class Sheep(RandomWalker):
         super().__init__(unique_id, pos, model, moore=moore)
         self.energy = energy
         self.age = 0
-        self.death_age: integer = None
+        self.life_span: integer = None
 
     def step(self):
         """
@@ -65,7 +65,7 @@ class Wolf(RandomWalker):
         super().__init__(unique_id, pos, model, moore=moore)
         self.energy = energy
         self.age = 0
-        self.death_age: integer = None
+        self.life_span: integer = None
 
     def step(self):
         # print("predator_" + str(self.unique_id))
@@ -122,6 +122,7 @@ class GrassPatch(mesa.Agent):
         self.fully_grown = fully_grown
         self.countdown = countdown
         self.pos = pos
+        self.age = 0
 
     def step(self):
         # print("grass_" + str(self.unique_id))

@@ -94,10 +94,12 @@ class WolfSheep(mesa.Model):
                 "Wolves": lambda m: m.schedule.get_type_count(Wolf),
                 "Sheep": lambda m: m.schedule.get_type_count(Sheep),
                 "Grass": lambda m: m.schedule.get_type_count(GrassPatch, lambda x: x.fully_grown),
-            }
+            }, {"unique_id" : lambda a:a.age},
+
         )
-        print(self.datacollector.model_vars["Wolves"])
-        print(self.datacollector.model_reporters)
+
+        #print(self.datacollector.model_vars["Wolves"])
+        #print(self.datacollector.model_reporters)
 
         # Create wolves
         for i in range(self.initial_wolves):
