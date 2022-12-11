@@ -17,13 +17,12 @@ import mesa
 from predator_prey.scheduler import RandomActivationByTypeFiltered, RandomActivationMixedTypes
 from predator_prey.agents import Prey, Predator, GrassPatch
 
-Prey
 class PredatorPrey(mesa.Model):
     height = 10
     width = 10
 
     initial_prey = 10
-    initial_wolves = 5
+    initial_predators = 5
 
     prey_reproduce = 0.04
     predator_reproduce = 0.05
@@ -48,7 +47,7 @@ class PredatorPrey(mesa.Model):
         width=10,
         height=10,
         initial_prey=10,
-        initial_wolves=5,
+        initial_predators=5,
         prey_reproduce=0.04,
         predator_reproduce=0.05,
         predator_gain_from_food=20,
@@ -61,7 +60,7 @@ class PredatorPrey(mesa.Model):
 
         Args:
             initial_prey: Number of prey to start with
-            initial_wolves: Number of wolves to start with
+            initial_predators: Number of predators to start with
             prey_reproduce: Probability of each prey reproducing each step
             predator_reproduce: Probability of each predator reproducing each step
             predator_gain_from_food: Energy a predator gains from eating a prey
@@ -75,7 +74,7 @@ class PredatorPrey(mesa.Model):
         self.width = width
         self.height = height
         self.initial_prey = initial_prey
-        self.initial_wolves = initial_wolves
+        self.initial_predators = initial_predators
         self.prey_reproduce = prey_reproduce
         self.predator_reproduce = predator_reproduce
         self.predator_gain_from_food = predator_gain_from_food
@@ -93,18 +92,18 @@ class PredatorPrey(mesa.Model):
         """
         self.datacollector = mesa.DataCollector(model_reporters=
             {
-                "Wolves": lambda m: m.schedule.get_type_count(Predator),
+                "Predators": lambda m: m.schedule.get_type_count(Predator),
                 "Prey": lambda m: m.schedule.get_type_count(Prey),
                 "Grass": lambda m: m.schedule.get_type_count(GrassPatch, lambda x: x.fully_grown),
             }, agent_reporters={"unique_id" : lambda a:a.age},
 
         )
 
-        #print(self.datacollector.model_vars["Wolves"])
+        #print(self.datacollector.model_vars["Predators"])
         #print(self.datacollector.get_agent_vars_dataframe())
 
-        # Create wolves
-        for i in range(self.initial_wolves):
+        # Create predators
+        for i in range(self.initial_predators):
             x = self.random.randrange(self.width)
             y = self.random.randrange(self.height)
             energy = self.random.randrange(2 * self.predator_gain_from_food)
@@ -158,7 +157,7 @@ class PredatorPrey(mesa.Model):
     def run_model(self, step_count=200):
 
         if self.verbose:
-            print("Initial number wolves: ", self.schedule.get_type_count(Predator))
+            print("Initial number predators: ", self.schedule.get_type_count(Predator))
             print("Initial number prey: ", self.schedule.get_type_count(Prey))
             print("Initial number grass: ",
                 self.schedule.get_type_count(GrassPatch, lambda x: x.fully_grown))
@@ -168,7 +167,7 @@ class PredatorPrey(mesa.Model):
 
         if self.verbose:
             print("")
-            print("Final number wolves: ", self.schedule.get_type_count(Predator))
+            print("Final number predators: ", self.schedule.get_type_count(Predator))
             print("Final number prey: ", self.schedule.get_type_count(Prey))
             print("Final number grass: ",
                 self.schedule.get_type_count(GrassPatch, lambda x: x.fully_grown),

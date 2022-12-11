@@ -5,7 +5,7 @@ from predator_prey.model import PredatorPrey
 
 #
 initial_prey = 10
-initial_wolves = 5
+initial_predators = 5
 grid_with = 10
 grid_height = 10
 
@@ -77,7 +77,7 @@ chart_element = mesa.visualization.ChartModule(
 model_params = {
     # The following line is an example to showcase StaticText.
     "title": mesa.visualization.StaticText("Parameters:"),
-    "initial_wolves": mesa.visualization.Slider("Initial predator Population", initial_wolves, 0, 300),
+    "initial_predators": mesa.visualization.Slider("Initial predator Population", initial_predators, 0, 300),
     "initial_prey": mesa.visualization.Slider(
         "Initial prey Population", initial_prey, 0, 300
     ),
