@@ -1,12 +1,15 @@
 """
-Wolf-Sheep Predation Model
-================================
+Predator-Prey Model
+=====================
 
 Replication of the model found in NetLogo:
     Wilensky, U. (1997). NetLogo Wolf Sheep Predation model.
     http://ccl.northwestern.edu/netlogo/models/WolfSheepPredation.
     Center for Connected Learning and Computer-Based Modeling,
     Northwestern University, Evanston, IL.
+
+    and: Olsen(2015)
+
 """
 
 import mesa
@@ -37,11 +40,11 @@ class WolfSheep(mesa.Model):
 
     verbose = True
 
-    is_per_type_random_activated = False    # pd: agent are all random activated regardless of type,
-                                            # if False agents are ramdom per type and random per class
+    is_per_type_random_activated = False    # pd: False: agent are all random activated regardless of type,
+                                            # if True agents are ramdom per type and random per class
 
     description = (
-        "A model for simulating Predator-Prey ecosystem modelling."
+        "A model for imulating Predator-Prey  modelling."
     )
 
     def __init__(
@@ -85,10 +88,13 @@ class WolfSheep(mesa.Model):
         self.sheep_gain_from_food = sheep_gain_from_food
 
         self.grid = mesa.space.MultiGrid(self.width, self.height, torus=True)
+        self.schedule = RandomActivationByTypeFiltered(self) if self.is_per_type_random_activated else RandomActivationMixedTypes(self)
+        """
         if self.is_per_type_random_activated:
             self.schedule = RandomActivationByTypeFiltered(self)
         else: # pd is fullly random activated regardless of agent type
             self.schedule = RandomActivationMixedTypes(self)
+        """
         self.datacollector = mesa.DataCollector(model_reporters=
             {
                 "Wolves": lambda m: m.schedule.get_type_count(Wolf),
