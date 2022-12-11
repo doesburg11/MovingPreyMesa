@@ -17,34 +17,36 @@ def wolf_sheep_portrayal(agent):
     portrayal = {}
 
     if type(agent) is Wolf:
-        # agent shape
+        # agent layout
         portrayal["Shape"] = "circle" # "predator_prey/resources_pd/wolf.png"
         portrayal["r"] = 0.8
         portrayal["Filled"] = "true"
         portrayal["Color"] = ["#FF0000", "#FF9999"]
         portrayal["stroke_color"] = "#00FF00"
 
-        # tooltip
+        # tooltip content Predator
         portrayal["type"] = "Predator"
         portrayal["id"] = agent.unique_id
         portrayal["age"] = agent.age
         portrayal["energy"] = round(agent.energy, 2)
         portrayal["text_color"] = "White"
+        portrayal["pos"] = str(agent.pos)
         portrayal["Layer"] = 1
 
     elif type(agent) is Sheep:
+        # agent layout
         portrayal["Shape"] = "circle"
         portrayal["r"] = 0.5
         portrayal["Filled"] = "true"
         portrayal["Color"] = ["#0000FF", "#9999FF"]
         portrayal["stroke_color"] = "#000000"
 
-
+        # tooltip content Prey
         portrayal["type"] = "Prey"
         portrayal["id"] = agent.unique_id
         portrayal["age"] = agent.age
         portrayal["energy"] = round(agent.energy, 2)
-        # portrayal["scale"] = 0.9
+        portrayal["pos"] = str(agent.pos)
         portrayal["Layer"] = 1
 
 

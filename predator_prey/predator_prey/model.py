@@ -99,7 +99,7 @@ class WolfSheep(mesa.Model):
         )
 
         #print(self.datacollector.model_vars["Wolves"])
-        print(self.datacollector.get_agent_vars_dataframe())
+        #print(self.datacollector.get_agent_vars_dataframe())
 
         # Create wolves
         for i in range(self.initial_wolves):
@@ -134,7 +134,7 @@ class WolfSheep(mesa.Model):
 
         self.running = True
         self.datacollector.collect(self)
-        print()
+        #print()
 
     def step(self):
         self.schedule.step()

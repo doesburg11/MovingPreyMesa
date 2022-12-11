@@ -21,8 +21,9 @@ class Sheep(RandomWalker):
         """
         A model step. Moves, ages, then eat grass and reproduce.
         """
-        # print("prey_"+str(self.unique_id))
+        print("prey_" + str(self.unique_id)+": "+str(self.pos)+"=>", end="")
         self.random_move()
+        print(self.pos)
         self.age += 1
         living = True
 
@@ -42,6 +43,7 @@ class Sheep(RandomWalker):
                 self.model.grid.remove_agent(self)
                 self.model.schedule.remove(self)
                 living = False
+                print("*   prey_"+str(self.unique_id)+" dies at age "+str(self.age)+" of starvation")
 
         if living and self.random.random() < self.model.sheep_reproduce:
             # Create a new sheep:
@@ -52,6 +54,7 @@ class Sheep(RandomWalker):
             )
             self.model.grid.place_agent(lamb, self.pos)
             self.model.schedule.add(lamb)
+            print("*   prey_"+str(self.unique_id)+" creates at age "+str(self.age)+" new predator at "+str(self.pos))
 
 
 class Wolf(RandomWalker):
@@ -68,8 +71,9 @@ class Wolf(RandomWalker):
         self.life_span: integer = None
 
     def step(self):
-        # print("predator_" + str(self.unique_id))
+        print("predator_" + str(self.unique_id)+": "+str(self.pos)+"=>", end="")
         self.random_move()
+        print(self.pos)
         self.age += 1
         self.energy -= 1
 
@@ -87,6 +91,8 @@ class Wolf(RandomWalker):
             sheep_to_eat.death_age = sheep_to_eat.age #TODO: add death_age to record for sheep
             self.model.grid.remove_agent(sheep_to_eat)
             self.model.schedule.remove(sheep_to_eat)
+            print("*   prey_"+str(sheep_to_eat.unique_id)+" dies at age "+str(sheep_to_eat.age)+
+                  " of being eaten by predator_"+str(self.unique_id))
 
 
         # Death or reproduction
@@ -94,6 +100,7 @@ class Wolf(RandomWalker):
             self.death_age = self.age
             self.model.grid.remove_agent(self)
             self.model.schedule.remove(self)
+            print("*   predator_"+str(self.unique_id)+" dies at age "+str(self.age)+" of starvation")
         else:
             if self.random.random() < self.model.wolf_reproduce:
                 # Create a new wolf cub
@@ -103,6 +110,7 @@ class Wolf(RandomWalker):
                 )
                 self.model.grid.place_agent(cub, cub.pos)
                 self.model.schedule.add(cub)
+                print("*predator_"+str(self.unique_id)+" creates at age "+str(self.age)+" new predator at "+str(self.pos))
 
 
 class GrassPatch(mesa.Agent):
