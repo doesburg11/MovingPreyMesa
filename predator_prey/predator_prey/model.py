@@ -18,7 +18,7 @@ from predator_prey.scheduler import RandomActivationByTypeFiltered, RandomActiva
 from predator_prey.agents import Sheep, Wolf, GrassPatch
 
 
-class WolfSheep(mesa.Model):
+class PredatorPrey(mesa.Model):
     """
     Wolf-Sheep Predation Model
     """
