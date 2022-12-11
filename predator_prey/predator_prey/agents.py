@@ -2,9 +2,9 @@ import mesa
 from predator_prey.random_walk import RandomWalker
 
 
-class Sheep(RandomWalker):
+class Prey(RandomWalker):
     """
-    A sheep that walks around, reproduces (asexually) and gets eaten.
+    A prey that walks around, reproduces (asexually) and gets eaten.
 
     The init is the same as the RandomWalker.
     """
@@ -35,7 +35,7 @@ class Sheep(RandomWalker):
             this_cell = self.model.grid.get_cell_list_contents([self.pos])
             grass_patch = [obj for obj in this_cell if isinstance(obj, GrassPatch)][0]
             if grass_patch.fully_grown:
-                self.energy += self.model.sheep_gain_from_food
+                self.energy += self.model.prey_gain_from_food
                 grass_patch.fully_grown = False
 
             # Death
@@ -45,11 +45,11 @@ class Sheep(RandomWalker):
                 living = False
                 print("*   prey_"+str(self.unique_id)+" dies at age "+str(self.age)+" of starvation")
 
-        if living and self.random.random() < self.model.sheep_reproduce:
-            # Create a new sheep:
+        if living and self.random.random() < self.model.prey_reproduce:
+            # Create a new prey:
             if self.model.grass:
                 self.energy /= 2
-            lamb = Sheep(
+            lamb = Prey(
                 self.model.next_id(), self.pos, self.model, self.moore, self.energy
             )
             self.model.grid.place_agent(lamb, self.pos)
@@ -57,9 +57,9 @@ class Sheep(RandomWalker):
             print("*   prey_"+str(self.unique_id)+" creates at age "+str(self.age)+" new predator at "+str(self.pos))
 
 
-class Wolf(RandomWalker):
+class Predator(RandomWalker):
     """
-    A wolf that walks around, reproduces (asexually) and eats sheep.
+    A predator that walks around, reproduces (asexually) and eats prey.
     """
 
     energy = None
@@ -77,21 +77,21 @@ class Wolf(RandomWalker):
         self.age += 1
         self.energy -= 1
 
-        # If there are sheep present, eat one
+        # If there are prey present, eat one
         x, y = self.pos
         this_cell = self.model.grid.get_cell_list_contents([self.pos])
-        sheep = [obj for obj in this_cell if isinstance(obj, Sheep)]
-        if len(sheep) > 0:
-            # eat random sheep
-            #TODO: eat sheep with most energy or weakest sheep if sheep can resist?
-            sheep_to_eat = self.random.choice(sheep)
-            self.energy += self.model.wolf_gain_from_food
+        prey = [obj for obj in this_cell if isinstance(obj, Prey)]
+        if len(prey) > 0:
+            # eat random prey
+            #TODO: eat prey with most energy or weakest prey if prey can resist?
+            prey_to_eat = self.random.choice(prey)
+            self.energy += self.model.predator_gain_from_food
 
-            # Kill the sheep
-            sheep_to_eat.death_age = sheep_to_eat.age #TODO: add death_age to record for sheep
-            self.model.grid.remove_agent(sheep_to_eat)
-            self.model.schedule.remove(sheep_to_eat)
-            print("*   prey_"+str(sheep_to_eat.unique_id)+" dies at age "+str(sheep_to_eat.age)+
+            # Kill the prey
+            prey_to_eat.death_age = prey_to_eat.age #TODO: add death_age to record for prey
+            self.model.grid.remove_agent(prey_to_eat)
+            self.model.schedule.remove(prey_to_eat)
+            print("*   prey_"+str(prey_to_eat.unique_id)+" dies at age "+str(prey_to_eat.age)+
                   " of being eaten by predator_"+str(self.unique_id))
 
 
@@ -102,10 +102,10 @@ class Wolf(RandomWalker):
             self.model.schedule.remove(self)
             print("*   predator_"+str(self.unique_id)+" dies at age "+str(self.age)+" of starvation")
         else:
-            if self.random.random() < self.model.wolf_reproduce:
-                # Create a new wolf cub
+            if self.random.random() < self.model.predator_reproduce:
+                # Create a new predator cub
                 self.energy /= 2
-                cub = Wolf(
+                cub = Predator(
                     self.model.next_id(), self.pos, self.model, self.moore, self.energy
                 )
                 self.model.grid.place_agent(cub, cub.pos)
@@ -115,7 +115,7 @@ class Wolf(RandomWalker):
 
 class GrassPatch(mesa.Agent):
     """
-    A patch of grass that grows at a fixed rate and it is eaten by sheep
+    A patch of grass that grows at a fixed rate and it is eaten by prey
     """
 
     def __init__(self, unique_id, pos, model, fully_grown, countdown):

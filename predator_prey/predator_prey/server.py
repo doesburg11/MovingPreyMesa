@@ -1,24 +1,24 @@
 import mesa
 
-from predator_prey.agents import Wolf, Sheep, GrassPatch
+from predator_prey.agents import Predator, Prey, GrassPatch
 from predator_prey.model import PredatorPrey
 
 #
-initial_sheep = 10
+initial_prey = 10
 initial_wolves = 5
 grid_with = 10
 grid_height = 10
 
 
-def wolf_sheep_portrayal(agent):
+def predator_prey_portrayal(agent):
     if agent is None:
         return
 
     portrayal = {}
 
-    if type(agent) is Wolf:
+    if type(agent) is Predator:
         # agent layout
-        portrayal["Shape"] = "circle" # "predator_prey/resources_pd/wolf.png"
+        portrayal["Shape"] = "circle"
         portrayal["r"] = 0.8
         portrayal["Filled"] = "true"
         portrayal["Color"] = ["#FF0000", "#FF9999"]
@@ -33,7 +33,7 @@ def wolf_sheep_portrayal(agent):
         portrayal["pos"] = str(agent.pos)
         portrayal["Layer"] = 1
 
-    elif type(agent) is Sheep:
+    elif type(agent) is Prey:
         # agent layout
         portrayal["Shape"] = "circle"
         portrayal["r"] = 0.5
@@ -65,11 +65,11 @@ def wolf_sheep_portrayal(agent):
     return portrayal
 
 
-canvas_element = mesa.visualization.CanvasGrid(wolf_sheep_portrayal, grid_with, grid_height, 500, 500)
+canvas_element = mesa.visualization.CanvasGrid(predator_prey_portrayal, grid_with, grid_height, 500, 500)
 chart_element = mesa.visualization.ChartModule(
     [
-        {"Label": "Wolves", "Color": "#AA0000"},
-        {"Label": "Sheep", "Color": "#666666"},
+        {"Label": "Predators", "Color": "#AA0000"},
+        {"Label": "Prey", "Color": "#666666"},
         {"Label": "Grass", "Color": "#00AA00"},
     ]
 )
@@ -77,28 +77,28 @@ chart_element = mesa.visualization.ChartModule(
 model_params = {
     # The following line is an example to showcase StaticText.
     "title": mesa.visualization.StaticText("Parameters:"),
-    "initial_wolves": mesa.visualization.Slider("Initial Wolf Population", initial_wolves, 0, 300),
-    "initial_sheep": mesa.visualization.Slider(
-        "Initial Sheep Population", initial_sheep, 0, 300
+    "initial_wolves": mesa.visualization.Slider("Initial predator Population", initial_wolves, 0, 300),
+    "initial_prey": mesa.visualization.Slider(
+        "Initial prey Population", initial_prey, 0, 300
     ),
     "grass": mesa.visualization.Checkbox("Grass Enabled", True),
     "grass_regrowth_time": mesa.visualization.Slider("Grass Regrowth Time", 20, 1, 50),
 
-    "sheep_reproduce": mesa.visualization.Slider(
-        "Sheep Reproduction Rate", 0.04, 0.01, 1.0, 0.01
+    "prey_reproduce": mesa.visualization.Slider(
+        "prey Reproduction Rate", 0.04, 0.01, 1.0, 0.01
     ),
-    "wolf_reproduce": mesa.visualization.Slider(
-        "Wolf Reproduction Rate",
+    "predator_reproduce": mesa.visualization.Slider(
+        "predator Reproduction Rate",
         0.05,
         0.01,
         1.0,
         0.01,
-        description="The rate at which wolf agents reproduce.",
+        description="The rate at which predator agents reproduce.",
     ),
-    "wolf_gain_from_food": mesa.visualization.Slider(
-        "Wolf Gain From Food Rate", 20, 1, 50
+    "predator_gain_from_food": mesa.visualization.Slider(
+        "Predator Gain From Food Rate", 20, 1, 50
     ),
-    "sheep_gain_from_food": mesa.visualization.Slider("Sheep Gain From Food", 4, 1, 10),
+    "prey_gain_from_food": mesa.visualization.Slider("Prey Gain From Food", 4, 1, 10),
 }
 
 server = mesa.visualization.ModularServer(

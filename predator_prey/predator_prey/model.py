@@ -3,8 +3,8 @@ Predator-Prey Model
 =====================
 
 Replication of the model found in NetLogo:
-    Wilensky, U. (1997). NetLogo Wolf Sheep Predation model.
-    http://ccl.northwestern.edu/netlogo/models/WolfSheepPredation.
+    Wilensky, U. (1997). NetLogo Predator Prey model.
+    http://ccl.northwestern.edu/netlogo/models/WolvesSheepPredation.
     Center for Connected Learning and Computer-Based Modeling,
     Northwestern University, Evanston, IL.
 
@@ -15,28 +15,24 @@ Replication of the model found in NetLogo:
 import mesa
 
 from predator_prey.scheduler import RandomActivationByTypeFiltered, RandomActivationMixedTypes
-from predator_prey.agents import Sheep, Wolf, GrassPatch
+from predator_prey.agents import Prey, Predator, GrassPatch
 
-
+Prey
 class PredatorPrey(mesa.Model):
-    """
-    Wolf-Sheep Predation Model
-    """
-
     height = 10
     width = 10
 
-    initial_sheep = 10
+    initial_prey = 10
     initial_wolves = 5
 
-    sheep_reproduce = 0.04
-    wolf_reproduce = 0.05
+    prey_reproduce = 0.04
+    predator_reproduce = 0.05
 
-    wolf_gain_from_food = 20
+    predator_gain_from_food = 20
 
     grass = False
     grass_regrowth_time = 30
-    sheep_gain_from_food = 4
+    prey_gain_from_food = 4
 
     verbose = True
 
@@ -51,41 +47,41 @@ class PredatorPrey(mesa.Model):
         self,
         width=10,
         height=10,
-        initial_sheep=10,
+        initial_prey=10,
         initial_wolves=5,
-        sheep_reproduce=0.04,
-        wolf_reproduce=0.05,
-        wolf_gain_from_food=20,
+        prey_reproduce=0.04,
+        predator_reproduce=0.05,
+        predator_gain_from_food=20,
         grass=False,
         grass_regrowth_time=30,
-        sheep_gain_from_food=4,
+        prey_gain_from_food=4,
     ):
         """
-        Create a new Wolf-Sheep model with the given parameters.
+        Create a new Predator-Prey model with the given parameters.
 
         Args:
-            initial_sheep: Number of sheep to start with
+            initial_prey: Number of prey to start with
             initial_wolves: Number of wolves to start with
-            sheep_reproduce: Probability of each sheep reproducing each step
-            wolf_reproduce: Probability of each wolf reproducing each step
-            wolf_gain_from_food: Energy a wolf gains from eating a sheep
-            grass: Whether to have the sheep eat grass for energy
+            prey_reproduce: Probability of each prey reproducing each step
+            predator_reproduce: Probability of each predator reproducing each step
+            predator_gain_from_food: Energy a predator gains from eating a prey
+            grass: Whether to have the prey eat grass for energy
             grass_regrowth_time: How long it takes for a grass patch to regrow
                                  once it is eaten
-            sheep_gain_from_food: Energy sheep gain from grass, if enabled.
+            prey_gain_from_food: Energy prey gain from grass, if enabled.
         """
         super().__init__()
         # Set parameters
         self.width = width
         self.height = height
-        self.initial_sheep = initial_sheep
+        self.initial_prey = initial_prey
         self.initial_wolves = initial_wolves
-        self.sheep_reproduce = sheep_reproduce
-        self.wolf_reproduce = wolf_reproduce
-        self.wolf_gain_from_food = wolf_gain_from_food
+        self.prey_reproduce = prey_reproduce
+        self.predator_reproduce = predator_reproduce
+        self.predator_gain_from_food = predator_gain_from_food
         self.grass = grass
         self.grass_regrowth_time = grass_regrowth_time
-        self.sheep_gain_from_food = sheep_gain_from_food
+        self.prey_gain_from_food = prey_gain_from_food
 
         self.grid = mesa.space.MultiGrid(self.width, self.height, torus=True)
         self.schedule = RandomActivationByTypeFiltered(self) if self.is_per_type_random_activated else RandomActivationMixedTypes(self)
@@ -97,8 +93,8 @@ class PredatorPrey(mesa.Model):
         """
         self.datacollector = mesa.DataCollector(model_reporters=
             {
-                "Wolves": lambda m: m.schedule.get_type_count(Wolf),
-                "Sheep": lambda m: m.schedule.get_type_count(Sheep),
+                "Wolves": lambda m: m.schedule.get_type_count(Predator),
+                "Prey": lambda m: m.schedule.get_type_count(Prey),
                 "Grass": lambda m: m.schedule.get_type_count(GrassPatch, lambda x: x.fully_grown),
             }, agent_reporters={"unique_id" : lambda a:a.age},
 
@@ -111,19 +107,19 @@ class PredatorPrey(mesa.Model):
         for i in range(self.initial_wolves):
             x = self.random.randrange(self.width)
             y = self.random.randrange(self.height)
-            energy = self.random.randrange(2 * self.wolf_gain_from_food)
-            wolf = Wolf(self.next_id(), (x, y), self, True, energy)
-            self.grid.place_agent(wolf, (x, y))
-            self.schedule.add(wolf)
+            energy = self.random.randrange(2 * self.predator_gain_from_food)
+            predator = Predator(self.next_id(), (x, y), self, True, energy)
+            self.grid.place_agent(predator, (x, y))
+            self.schedule.add(predator)
 
-        # Create sheep:
-        for i in range(self.initial_sheep):
+        # Create prey:
+        for i in range(self.initial_prey):
             x = self.random.randrange(self.width)
             y = self.random.randrange(self.height)
-            energy = self.random.randrange(2 * self.sheep_gain_from_food)
-            sheep = Sheep(self.next_id(), (x, y), self, True, energy)
-            self.grid.place_agent(sheep, (x, y))
-            self.schedule.add(sheep)
+            energy = self.random.randrange(2 * self.prey_gain_from_food)
+            prey = Prey(self.next_id(), (x, y), self, True, energy)
+            self.grid.place_agent(prey, (x, y))
+            self.schedule.add(prey)
 
         # Create grass patches
         if self.grass:
@@ -152,8 +148,8 @@ class PredatorPrey(mesa.Model):
             print(
                 [
                     self.schedule.time,
-                    self.schedule.get_type_count(Wolf),
-                    self.schedule.get_type_count(Sheep),
+                    self.schedule.get_type_count(Predator),
+                    self.schedule.get_type_count(Prey),
                     self.schedule.get_type_count(GrassPatch, lambda x: x.fully_grown),
                 ]
 
@@ -162,8 +158,8 @@ class PredatorPrey(mesa.Model):
     def run_model(self, step_count=200):
 
         if self.verbose:
-            print("Initial number wolves: ", self.schedule.get_type_count(Wolf))
-            print("Initial number sheep: ", self.schedule.get_type_count(Sheep))
+            print("Initial number wolves: ", self.schedule.get_type_count(Predator))
+            print("Initial number prey: ", self.schedule.get_type_count(Prey))
             print("Initial number grass: ",
                 self.schedule.get_type_count(GrassPatch, lambda x: x.fully_grown))
 
@@ -172,8 +168,8 @@ class PredatorPrey(mesa.Model):
 
         if self.verbose:
             print("")
-            print("Final number wolves: ", self.schedule.get_type_count(Wolf))
-            print("Final number sheep: ", self.schedule.get_type_count(Sheep))
+            print("Final number wolves: ", self.schedule.get_type_count(Predator))
+            print("Final number prey: ", self.schedule.get_type_count(Prey))
             print("Final number grass: ",
                 self.schedule.get_type_count(GrassPatch, lambda x: x.fully_grown),
             )
