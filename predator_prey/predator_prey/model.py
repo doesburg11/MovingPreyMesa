@@ -19,10 +19,6 @@ from predator_prey.scheduler import RandomActivationByTypeFiltered, RandomActiva
 from predator_prey.agents import Prey, Predator, GrassPatch
 
 
-#def compute_average_life_span_prey(model):
-#    return 0.0
-
-
 class PredatorPrey(mesa.Model):
     height = 10
     width = 10

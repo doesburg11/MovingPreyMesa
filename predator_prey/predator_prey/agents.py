@@ -4,9 +4,7 @@ from predator_prey.random_walk import RandomWalker
 
 class Prey(RandomWalker):
     """
-    A prey that walks around, reproduces (asexually) and gets eaten.
-
-    The init is the same as the RandomWalker.
+    A prey that walks around, reproduces (asexually), eats grass and gets eaten by predators.
     """
 
     energy = None
@@ -15,11 +13,10 @@ class Prey(RandomWalker):
         super().__init__(unique_id, pos, model, moore=moore)
         self.energy = energy
         self.age = 0
-        self.life_span: int = None
 
     def step(self):
         """
-        A model step. Moves, ages, then eat grass and reproduce.
+        A model step. Moves, ages, then eats grass or gets eaten or reproduce.
         """
         if self.model.verbose_1:
             print("prey_" + str(self.unique_id) + ": " + str(self.pos) + "=>", end="")
@@ -79,7 +76,6 @@ class Predator(RandomWalker):
         super().__init__(unique_id, pos, model, moore=moore)
         self.energy = energy
         self.age = 0
-        self.life_span: int = None
 
     def step(self):
         if self.model.verbose_1:
@@ -101,7 +97,6 @@ class Predator(RandomWalker):
             self.energy += self.model.predator_gain_from_food
 
             # Kill the prey
-            prey_to_eat.death_age = prey_to_eat.age  # TODO: add death_age to record for prey
             self.model.grid.remove_agent(prey_to_eat)
             self.model.schedule.remove(prey_to_eat)
             if self.model.verbose_2:
