@@ -14,12 +14,13 @@ Replication of the model found in NetLogo:
 
 import mesa
 
-from predator_prey.scheduler import RandomActivationByTypeFiltered, RandomActivationMixedTypes
+from predator_prey.scheduler import RandomActivationByTypeFiltered, RandomActivationByAllAgents
+
 from predator_prey.agents import Prey, Predator, GrassPatch
 
 
-def compute_average_life_span(model):
-    pass
+#def compute_average_life_span_prey(model):
+#    return 0.0
 
 
 class PredatorPrey(mesa.Model):
@@ -38,13 +39,17 @@ class PredatorPrey(mesa.Model):
     grass_regrowth_time = 30
     prey_gain_from_food = 4
 
-    verbose = True
+    verbose_0 = False # agent count
+    verbose_1 = False  # agent_id activation
+    verbose_2 = False  # agent death
+    verbose_3 = False  # agent birth
+    verbose_4 = True  # agent life span
 
     is_per_type_random_activated = False  # pd: False: agent are all random activated regardless of type,
     # if True agents are ramdom per type and random per class
 
     description = (
-        "A model for imulating Predator-Prey  modelling."
+        "A model for simulating Predator-Prey  modelling."
     )
 
     def __init__(
@@ -87,22 +92,21 @@ class PredatorPrey(mesa.Model):
         self.grass_regrowth_time = grass_regrowth_time
         self.prey_gain_from_food = prey_gain_from_food
 
-        self.grid = mesa.space.MultiGrid(self.width, self.height, torus=True)
         self.schedule = RandomActivationByTypeFiltered(self) if self.is_per_type_random_activated else \
-            RandomActivationMixedTypes(self)
-
+            RandomActivationByAllAgents(self)
+        self.grid = mesa.space.MultiGrid(self.width, self.height, torus=True)
         self.datacollector = mesa.DataCollector(
             model_reporters={
                 "Predators": lambda m: m.schedule.get_type_count(Predator),
                 "Prey": lambda m: m.schedule.get_type_count(Prey),
                 "Grass": lambda m: m.schedule.get_type_count(GrassPatch, lambda x: x.fully_grown),
-                #"average_life_span_predators": compute_average_life_span(Predator),
-                #"average_life_span_prey": compute_average_life_span(Prey),
-            }
+            },
+            agent_reporters=None,
+            tables={
+                "Lifespan_Predator": ["predator_id", "life_span"],
+                "Lifespan_Prey": ["prey_id", "life_span", "killed"],
+            },
         )
-
-        # print(self.datacollector.model_vars["Predators"])
-        # print(self.datacollector.get_agent_vars_dataframe())
 
         # Create predators
         for i in range(self.initial_predators):
@@ -137,15 +141,18 @@ class PredatorPrey(mesa.Model):
 
         self.running = True
         self.datacollector.collect(self)
-        # print()
 
     def step(self):
         self.schedule.step()
         # collect data
         self.datacollector.collect(self)
-        print(self.datacollector.get_model_vars_dataframe())
+        if self.verbose_0:
+            print(self.datacollector.get_model_vars_dataframe())
+        if self.verbose_4:
+            print(self.datacollector.get_table_dataframe("Lifespan_Prey"))
+            print(self.datacollector.get_table_dataframe("Lifespan_Predator"))
 
-        if self.verbose:
+        if self.verbose_0:
             print(
                 [
                     self.schedule.time,
@@ -158,7 +165,7 @@ class PredatorPrey(mesa.Model):
 
     def run_model(self, step_count=200):
 
-        if self.verbose:
+        if self.verbose_0:
             print("Initial number predators: ", self.schedule.get_type_count(Predator))
             print("Initial number prey: ", self.schedule.get_type_count(Prey))
             print("Initial number grass: ",
@@ -167,10 +174,11 @@ class PredatorPrey(mesa.Model):
         for i in range(step_count):
             self.step()
 
-        if self.verbose:
+        if self.verbose_0:
             print("")
             print("Final number predators: ", self.schedule.get_type_count(Predator))
             print("Final number prey: ", self.schedule.get_type_count(Prey))
             print("Final number grass: ",
                   self.schedule.get_type_count(GrassPatch, lambda x: x.fully_grown),
                   )
+

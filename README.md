@@ -18,6 +18,11 @@ cd C:\Users\peter\DataspellProjects\mesa_pd
 mesa runserver predator_prey
 ```
 
+TODO:
+-Step agent in addition to step model in viz.
+-add average_life_span in datacollector.
+
+
 Linux boot line by line:
 ```bash
 conda activate mesa_pd

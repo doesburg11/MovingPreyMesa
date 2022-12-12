@@ -15,15 +15,17 @@ class Prey(RandomWalker):
         super().__init__(unique_id, pos, model, moore=moore)
         self.energy = energy
         self.age = 0
-        self.life_span: integer = None
+        self.life_span: int = None
 
     def step(self):
         """
         A model step. Moves, ages, then eat grass and reproduce.
         """
-        print("prey_" + str(self.unique_id)+": "+str(self.pos)+"=>", end="")
+        if self.model.verbose_1:
+            print("prey_" + str(self.unique_id) + ": " + str(self.pos) + "=>", end="")
         self.random_move()
-        print(self.pos)
+        if self.model.verbose_1:
+            print(self.pos)
         self.age += 1
         living = True
 
@@ -43,18 +45,27 @@ class Prey(RandomWalker):
                 self.model.grid.remove_agent(self)
                 self.model.schedule.remove(self)
                 living = False
-                print("*   prey_"+str(self.unique_id)+" dies at age "+str(self.age)+" of starvation")
+                if self.model.verbose_2:
+                    print("*   prey_" + str(self.unique_id) + " dies at age " + str(self.age) + " of starvation")
+                self.model.datacollector.add_table_row(
+                    "Lifespan_Prey", {
+                        "prey_id": self.unique_id,
+                        "life_span": self.age,
+                        "killed": False,
+                    }
+                )
 
         if living and self.random.random() < self.model.prey_reproduce:
             # Create a new prey:
             if self.model.grass:
                 self.energy /= 2
-            lamb = Prey(
-                self.model.next_id(), self.pos, self.model, self.moore, self.energy
-            )
+            created_id = self.model.next_id()
+            lamb = Prey(created_id, self.pos, self.model, self.moore, self.energy)
             self.model.grid.place_agent(lamb, self.pos)
             self.model.schedule.add(lamb)
-            print("*   prey_"+str(self.unique_id)+" creates at age "+str(self.age)+" new predator at "+str(self.pos))
+            if self.model.verbose_3:
+                print("*   prey_" + str(self.unique_id) + " creates at age " + str(self.age) + " prey_"
+                      + str(created_id) + " at " + str(self.pos))
 
 
 class Predator(RandomWalker):
@@ -68,12 +79,14 @@ class Predator(RandomWalker):
         super().__init__(unique_id, pos, model, moore=moore)
         self.energy = energy
         self.age = 0
-        self.life_span: integer = None
+        self.life_span: int = None
 
     def step(self):
-        print("predator_" + str(self.unique_id)+": "+str(self.pos)+"=>", end="")
+        if self.model.verbose_1:
+            print("predator_" + str(self.unique_id) + ": " + str(self.pos) + "=>", end="")
         self.random_move()
-        print(self.pos)
+        if self.model.verbose_1:
+            print(self.pos)
         self.age += 1
         self.energy -= 1
 
@@ -83,34 +96,53 @@ class Predator(RandomWalker):
         prey = [obj for obj in this_cell if isinstance(obj, Prey)]
         if len(prey) > 0:
             # eat random prey
-            #TODO: eat prey with most energy or weakest prey if prey can resist?
+            # TODO: eat prey with most energy or weakest prey if prey can resist?
             prey_to_eat = self.random.choice(prey)
             self.energy += self.model.predator_gain_from_food
 
             # Kill the prey
-            prey_to_eat.death_age = prey_to_eat.age #TODO: add death_age to record for prey
+            prey_to_eat.death_age = prey_to_eat.age  # TODO: add death_age to record for prey
             self.model.grid.remove_agent(prey_to_eat)
             self.model.schedule.remove(prey_to_eat)
-            print("*   prey_"+str(prey_to_eat.unique_id)+" dies at age "+str(prey_to_eat.age)+
-                  " of being eaten by predator_"+str(self.unique_id))
-
+            if self.model.verbose_2:
+                print("*   prey_" + str(prey_to_eat.unique_id) + " dies at age " + str(prey_to_eat.age) +
+                      " of being eaten by predator_" + str(self.unique_id))
+            self.model.datacollector.add_table_row(
+                "Lifespan_Prey", {
+                    "prey_id": prey_to_eat.unique_id,
+                    "life_span": prey_to_eat.age,
+                    "killed": True,
+                }
+            )
 
         # Death or reproduction
         if self.energy < 0:
             self.death_age = self.age
             self.model.grid.remove_agent(self)
             self.model.schedule.remove(self)
-            print("*   predator_"+str(self.unique_id)+" dies at age "+str(self.age)+" of starvation")
+            if self.model.verbose_2:
+                print("*   predator_" + str(self.unique_id) + " dies at age " + str(self.age) + " of starvation")
+            self.model.datacollector.add_table_row(
+                "Lifespan_Predator", {
+                    "predator_id": self.unique_id,
+                    "life_span": self.age,
+                }
+            )
+
+
         else:
             if self.random.random() < self.model.predator_reproduce:
                 # Create a new predator cub
                 self.energy /= 2
+                created_id = self.model.next_id()
                 cub = Predator(
-                    self.model.next_id(), self.pos, self.model, self.moore, self.energy
+                    created_id, self.pos, self.model, self.moore, self.energy
                 )
                 self.model.grid.place_agent(cub, cub.pos)
                 self.model.schedule.add(cub)
-                print("*predator_"+str(self.unique_id)+" creates at age "+str(self.age)+" new predator at "+str(self.pos))
+                if self.model.verbose_3:
+                    print("*   predator_" + str(self.unique_id) + " creates at age " + str(self.age) + " predator_"
+                          + str(created_id) + " at " + str(self.pos))
 
 
 class GrassPatch(mesa.Agent):

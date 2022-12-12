@@ -15,9 +15,9 @@ class RandomActivationByTypeFiltered(mesa.time.RandomActivationByType):
     """
 
     def get_type_count(
-        self,
-        type_class: Type[mesa.Agent],
-        filter_func: Callable[[mesa.Agent], bool] = None,
+            self,
+            type_class: Type[mesa.Agent],
+            filter_func: Callable[[mesa.Agent], bool] = None,
     ) -> int:
         """
         Returns the current number of agents of certain type in the queue that satisfy the filter function.
@@ -28,8 +28,9 @@ class RandomActivationByTypeFiltered(mesa.time.RandomActivationByType):
                 count += 1
         return count
 
+
 # pd: random activator mixing types and counying types
-class RandomActivationMixedTypes(mesa.time.RandomActivation):
+class RandomActivationByAllAgents(mesa.time.RandomActivation):
 
     def __init__(self, model: mesa.Model) -> None:
         super().__init__(model)
@@ -55,8 +56,6 @@ class RandomActivationMixedTypes(mesa.time.RandomActivation):
         agent_class: type[mesa.Agent] = type(agent)
         del self.agents_by_type[agent_class][agent.unique_id]
 
-
-
     def get_type_count(
             self,
             type_class: Type[mesa.Agent],
@@ -70,4 +69,3 @@ class RandomActivationMixedTypes(mesa.time.RandomActivation):
             if filter_func is None or filter_func(agent):
                 count += 1
         return count
-
