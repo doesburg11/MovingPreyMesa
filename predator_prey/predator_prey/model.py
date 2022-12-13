@@ -151,15 +151,17 @@ class PredatorPrey(mesa.Model):
         if self.verbose_0:
             print(self.datacollector.get_model_vars_dataframe())
         if self.verbose_4:
-            print("tables:  `")
-            print(self.datacollector.get_table_dataframe("Lifespan_Prey"))
-            print(self.datacollector.get_table_dataframe("Lifespan_Predators"))
+            print("tables:  column life span Prey`")
+            print(self.datacollector.get_table_dataframe("Lifespan_Prey")["life_span"])
+            #print(self.datacollector.get_table_dataframe("Lifespan_Predators"))
 
         if self.verbose_5:
             print("Average life time Prey: ", end="")
             print(self.datacollector.get_table_dataframe("Lifespan_Prey")["life_span"].mean())
         if self.verbose_5:
+
             print("Average life time Predators: ", end="")
+
             print(self.datacollector.get_table_dataframe("Lifespan_Predators")["life_span"].mean())
 
         if self.verbose_0:
