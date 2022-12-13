@@ -20,7 +20,7 @@ mesa runserver predator_prey
 
 TODO:
 -Step agent in addition to step model in viz.
--add average_life_span in datacollector.
+-add average_life_span in viz
 
 
 Linux boot line by line:

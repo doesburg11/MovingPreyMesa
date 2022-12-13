@@ -95,7 +95,6 @@ class Predator(RandomWalker):
             # TODO: eat prey with most energy or weakest prey if prey can resist?
             prey_to_eat = self.random.choice(prey)
             self.energy += self.model.predator_gain_from_food
-
             # Kill the prey
             self.model.grid.remove_agent(prey_to_eat)
             self.model.schedule.remove(prey_to_eat)
@@ -118,13 +117,11 @@ class Predator(RandomWalker):
             if self.model.verbose_2:
                 print("*   predator_" + str(self.unique_id) + " dies at age " + str(self.age) + " of starvation")
             self.model.datacollector.add_table_row(
-                "Lifespan_Predator", {
+                "Lifespan_Predators", {
                     "predator_id": self.unique_id,
                     "life_span": self.age,
                 }
             )
-
-
         else:
             if self.random.random() < self.model.predator_reproduce:
                 # Create a new predator cub

@@ -35,14 +35,18 @@ class PredatorPrey(mesa.Model):
     grass_regrowth_time = 30
     prey_gain_from_food = 4
 
-    verbose_0 = False # agent count
+    verbose_0 = False  # agent count
     verbose_1 = False  # agent_id activation
     verbose_2 = False  # agent death
     verbose_3 = False  # agent birth
-    verbose_4 = True  # agent life span
+    verbose_4 = False  # agent life span table
+    verbose_5 = True  # agent life span average
 
-    is_per_type_random_activated = False  # pd: False: agent are all random activated regardless of type,
-    # if True agents are ramdom per type and random per class
+    is_per_type_random_activated = False
+    """
+    False: agent are all random activated regardless of type,
+    if True agents are random per agent type and random per class
+    """
 
     description = (
         "A model for simulating Predator-Prey  modelling."
@@ -99,7 +103,7 @@ class PredatorPrey(mesa.Model):
             },
             agent_reporters=None,
             tables={
-                "Lifespan_Predator": ["predator_id", "life_span"],
+                "Lifespan_Predators": ["predator_id", "life_span"],
                 "Lifespan_Prey": ["prey_id", "life_span", "killed"],
             },
         )
@@ -145,22 +149,24 @@ class PredatorPrey(mesa.Model):
         if self.verbose_0:
             print(self.datacollector.get_model_vars_dataframe())
         if self.verbose_4:
+            print("tables:  `")
             print(self.datacollector.get_table_dataframe("Lifespan_Prey"))
-            print(self.datacollector.get_table_dataframe("Lifespan_Predator"))
+            print(self.datacollector.get_table_dataframe("Lifespan_Predators"))
+
+        if self.verbose_5:
+            print("Average life time Prey: ", end="")
+            print(self.datacollector.get_table_dataframe("Lifespan_Prey")["life_span"].mean())
+        if self.verbose_5:
+            print("Average life time Predators: ", end="")
+            print(self.datacollector.get_table_dataframe("Lifespan_Predators")["life_span"].mean())
 
         if self.verbose_0:
-            print(
-                [
-                    self.schedule.time,
-                    self.schedule.get_type_count(Predator),
-                    self.schedule.get_type_count(Prey),
-                    self.schedule.get_type_count(GrassPatch, lambda x: x.fully_grown),
-                ]
-
-            )
+            print([self.schedule.time,
+                   self.schedule.get_type_count(Predator),
+                   self.schedule.get_type_count(Prey),
+                   self.schedule.get_type_count(GrassPatch, lambda x: x.fully_grown)])
 
     def run_model(self, step_count=200):
-
         if self.verbose_0:
             print("Initial number predators: ", self.schedule.get_type_count(Predator))
             print("Initial number prey: ", self.schedule.get_type_count(Prey))
