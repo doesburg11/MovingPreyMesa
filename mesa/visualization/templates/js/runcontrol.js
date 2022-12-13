@@ -16,6 +16,7 @@ const stepModelButton = document.getElementById("step");
 const resetModelButton = document.getElementById("reset");
 const stepDisplay = document.getElementById("currentStep");
 
+
 /**
  * A ModelController that defines the model state.
  * @param  {number} tick=0 - Initial step of the model
