@@ -3,11 +3,7 @@ Predator-Prey Model
 =====================
 
 Replication of the model found in NetLogo:
-    Wilensky, U. (1997). NetLogo Predator Prey model.
-    http://ccl.northwestern.edu/netlogo/models/WolvesSheepPredation.
-    Center for Connected Learning and Computer-Based Modeling,
-    Northwestern University, Evanston, IL.
-
+    Wilensky, U. (1997). NetLogo Predator Prey model
     and: Olsen(2015)
 
 """

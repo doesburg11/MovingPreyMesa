@@ -16,6 +16,8 @@ const stepModelButton = document.getElementById("step");
 const resetModelButton = document.getElementById("reset");
 const stepDisplay = document.getElementById("currentStep");
 
+const stepAgentModelButton = document.getElementById("step-agent"); /*pd*/
+
 
 /**
  * A ModelController that defines the model state.
@@ -123,6 +125,14 @@ stepModelButton.onclick = () => {
     controller.step();
   }
 };
+
+/*pd*/
+stepAgentModelButton.onclick = () => {
+  if (!controller.running & !controller.finished) {
+    controller.step();
+  }
+};
+
 resetModelButton.onclick = () => controller.reset();
 
 /*
