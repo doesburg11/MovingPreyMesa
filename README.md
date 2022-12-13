@@ -26,6 +26,7 @@ cd /home/doesburg/DataspellProjects/mesa_pd/examples
 kill -9 $(ps -A | grep python | awk '{print $1}')
 mesa runserver boltzmann_wealth_model_network
 ```
+
 TODO:
 -Step agent in addition to step model in viz.
 -add average_life_span in viz
