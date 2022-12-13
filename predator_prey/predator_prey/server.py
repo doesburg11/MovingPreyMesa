@@ -3,7 +3,6 @@ import mesa
 from predator_prey.agents import Predator, Prey, GrassPatch
 from predator_prey.model import PredatorPrey
 
-#
 initial_prey = 10
 initial_predators = 5
 grid_with = 10
@@ -23,13 +22,14 @@ def predator_prey_portrayal(agent):
         portrayal["Filled"] = "true"
         portrayal["Color"] = ["#FF0000", "#FF9999"]
         portrayal["stroke_color"] = "#00FF00"
+        portrayal["text"] = agent.unique_id
+        portrayal["text_color"] = "black"
 
         # tooltip content Predator
         portrayal["type"] = "Predator"
         portrayal["id"] = agent.unique_id
         portrayal["age"] = agent.age
         portrayal["energy"] = round(agent.energy, 2)
-        portrayal["text_color"] = "White"
         portrayal["pos"] = str(agent.pos)
         portrayal["Layer"] = 1
 
@@ -40,6 +40,8 @@ def predator_prey_portrayal(agent):
         portrayal["Filled"] = "true"
         portrayal["Color"] = ["#0000FF", "#9999FF"]
         portrayal["stroke_color"] = "#000000"
+        portrayal["text"] = agent.unique_id
+        portrayal["text_color"] = "black"
 
         # tooltip content Prey
         portrayal["type"] = "Prey"
@@ -48,8 +50,6 @@ def predator_prey_portrayal(agent):
         portrayal["energy"] = round(agent.energy, 2)
         portrayal["pos"] = str(agent.pos)
         portrayal["Layer"] = 1
-
-
 
     elif type(agent) is GrassPatch:
         if agent.fully_grown:
@@ -73,6 +73,14 @@ chart_element = mesa.visualization.ChartModule(
         {"Label": "Grass", "Color": "#00AA00"},
     ]
 )
+
+chart_element2 = mesa.visualization.ChartModule(
+    [
+        {"Label": "Lifespan_Predators", "Color": "#AA0000"},
+        {"Label": "Lifespan_Prey", "Color": "#666666"},
+    ]
+)
+
 
 model_params = {
     # The following line is an example to showcase StaticText.
@@ -102,6 +110,6 @@ model_params = {
 }
 
 server = mesa.visualization.ModularServer(
-    PredatorPrey, [canvas_element, chart_element], "Predator Prey Model", model_params
+    PredatorPrey, [canvas_element, chart_element, chart_element2], "Predator Prey Model", model_params
 )
 server.port = 8521

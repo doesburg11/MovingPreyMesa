@@ -39,8 +39,8 @@ class PredatorPrey(mesa.Model):
     verbose_1 = False  # agent_id activation
     verbose_2 = False  # agent death
     verbose_3 = False  # agent birth
-    verbose_4 = False  # agent life span table
-    verbose_5 = True  # agent life span average
+    verbose_4 = True  # agent life span table
+    verbose_5 = False  # agent life span average
 
     is_per_type_random_activated = False
     """
@@ -100,6 +100,8 @@ class PredatorPrey(mesa.Model):
                 "Predators": lambda m: m.schedule.get_type_count(Predator),
                 "Prey": lambda m: m.schedule.get_type_count(Prey),
                 "Grass": lambda m: m.schedule.get_type_count(GrassPatch, lambda x: x.fully_grown),
+                "Average_Lifespan_Predators": "life_span" ,
+                "Average Lifespan Prey": "life_span",
             },
             agent_reporters=None,
             tables={
