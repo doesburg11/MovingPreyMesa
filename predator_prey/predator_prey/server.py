@@ -74,22 +74,18 @@ chart_element = mesa.visualization.ChartModule(
     ]
 )
 
-chart_element2 = mesa.visualization.ChartModule(
-    [
-        {"Label": "Lifespan_Predators", "Color": "#AA0000"},
-        {"Label": "Lifespan_Prey", "Color": "#666666"},
-    ]
-)
-
 
 model_params = {
     # The following line is an example to showcase StaticText.
-    "title": mesa.visualization.StaticText("Parameters:"),
-    "initial_predators": mesa.visualization.Slider("Initial predator Population", initial_predators, 0, 300),
-    "initial_prey": mesa.visualization.Slider(
-        "Initial prey Population", initial_prey, 0, 300
-    ),
+    #"title": mesa.visualization.StaticText("Parameters:"),
+    #"initial_predators": mesa.visualization.Slider("Initial predator Population", initial_predators, 0, 300),
+    #"initial_prey": mesa.visualization.Slider(
+    #    "Initial prey Population", initial_prey, 0, 300
+    #),
     "grass": mesa.visualization.Checkbox("Grass Enabled", True),
+}
+
+"""
     "grass_regrowth_time": mesa.visualization.Slider("Grass Regrowth Time", 20, 1, 50),
 
     "prey_reproduce": mesa.visualization.Slider(
@@ -108,8 +104,10 @@ model_params = {
     ),
     "prey_gain_from_food": mesa.visualization.Slider("Prey Gain From Food", 4, 1, 10),
 }
+"""
+
 
 server = mesa.visualization.ModularServer(
-    PredatorPrey, [canvas_element, chart_element, chart_element2], "Predator Prey Model", model_params
+    PredatorPrey, [canvas_element, chart_element], "Predator Prey Model", model_params
 )
 server.port = 8521

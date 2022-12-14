@@ -29,7 +29,7 @@ class RandomActivationByTypeFiltered(mesa.time.RandomActivationByType):
         return count
 
 
-# pd: random activator mixing types and counying types
+# pd: random activator mixing types and counting types
 class RandomActivationByAllAgents(mesa.time.RandomActivation):
 
     def __init__(self, model: mesa.Model) -> None:

@@ -16,7 +16,7 @@ const stepModelButton = document.getElementById("step");
 const resetModelButton = document.getElementById("reset");
 const stepDisplay = document.getElementById("currentStep");
 
-const stepAgentModelButton = document.getElementById("step-agent"); /*pd*/
+/* const stepAgentModelButton = document.getElementById("step-agent"); pd*/
 
 
 /**
@@ -126,12 +126,12 @@ stepModelButton.onclick = () => {
   }
 };
 
-/*pd*/
+/*pd
 stepAgentModelButton.onclick = () => {
   if (!controller.running & !controller.finished) {
     controller.step();
   }
-};
+};*/
 
 resetModelButton.onclick = () => controller.reset();
 

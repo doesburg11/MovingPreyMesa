@@ -13,6 +13,7 @@ class Prey(RandomWalker):
         super().__init__(unique_id, pos, model, moore=moore)
         self.energy = energy
         self.age = 0
+        self.life_span = None
 
     def step(self):
         """
@@ -76,6 +77,7 @@ class Predator(RandomWalker):
         super().__init__(unique_id, pos, model, moore=moore)
         self.energy = energy
         self.age = 0
+        self.life_span = None
 
     def step(self):
         if self.model.verbose_1:
@@ -111,7 +113,7 @@ class Predator(RandomWalker):
 
         # Death or reproduction
         if self.energy < 0:
-            self.death_age = self.age
+            self.life_span= self.age
             self.model.grid.remove_agent(self)
             self.model.schedule.remove(self)
             if self.model.verbose_2:
@@ -119,7 +121,7 @@ class Predator(RandomWalker):
             self.model.datacollector.add_table_row(
                 "Lifespan_Predators", {
                     "predator_id": self.unique_id,
-                    "life_span": self.age,
+                    "life_span": self.life_span,
                 }
             )
         else:
@@ -155,6 +157,7 @@ class GrassPatch(mesa.Agent):
         self.countdown = countdown
         self.pos = pos
         self.age = 0
+        self.life_span = None
 
     def step(self):
         # print("grass_" + str(self.unique_id))
