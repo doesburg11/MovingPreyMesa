@@ -13,7 +13,6 @@ class Prey(RandomWalker):
         super().__init__(unique_id, pos, model, moore=moore)
         self.energy = energy
         self.age = 0
-        self.life_span = None
 
     def step(self):
         """
@@ -77,7 +76,6 @@ class Predator(RandomWalker):
         super().__init__(unique_id, pos, model, moore=moore)
         self.energy = energy
         self.age = 0
-        self.life_span = None
 
     def step(self):
         if self.model.verbose_1:
