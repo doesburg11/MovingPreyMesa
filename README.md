@@ -30,7 +30,7 @@ mesa runserver boltzmann_wealth_model_network
 TODO:
 -Step agent in addition to step model in viz.
 -add average_life_span in viz
--energy as a guide for succes between Predator and Prey 
+-energy as a guide for success between Predator and Prey 
 
 
 Linux boot line by line:
