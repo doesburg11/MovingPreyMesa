@@ -2,7 +2,7 @@ import mesa
 from predator_prey.random_walk import RandomWalker
 
 
-class Prey(RandomWalker):0
+class Prey(RandomWalker):
     """
     A prey that walks around, reproduces (asexually), eats grass and gets eaten by predators.
     """
@@ -31,18 +31,20 @@ class Prey(RandomWalker):0
             self.energy -= 1  #TODO: energy loss depend on step size
 
             # If there is grass available, eat it
-            this_cell = self.model.grid.get_cell_list_contents([self.pos])
-            agents_in_this_cell = [obj for obj in this_cell if isinstance(obj, GrassPatch)]
-            print("agents_in_this_cell")
-            print(agents_in_this_cell)
-            grass_patch = agents_in_this_cell[0]
-            if grass_patch.energy < self.model.min_energy_grass_regrowth:
-                self.model.grid.remove_agent(grass_patch)
-                self.model.schedule.remove(grass_patch)
-
-                self.energy += grass_patch.energy
-                grass_patch.fully_grown = False
-                grass_patch.energy = 0
+            agents_list_in__cell = self.model.grid.get_cell_list_contents([self.pos])
+            print("grass_patches_in_cell: "+str([obj for obj in agents_list_in__cell if isinstance(obj, GrassPatch)]))
+            print("# grass_patches: "+str(len([obj for obj in agents_list_in__cell if isinstance(obj, GrassPatch)])))
+            grass_patches_list_in_cell = [obj for obj in agents_list_in__cell if isinstance(obj, GrassPatch)]
+            is_grass_patch_in_cell = len(grass_patches_list_in_cell) > 0
+            if is_grass_patch_in_cell:
+                grass_patch_in_cell = [obj for obj in agents_list_in__cell if isinstance(obj, GrassPatch)][0]
+                if grass_patch_in_cell.energy < self.model.min_energy_grass_regrowth:
+                    self.model.grid.remove_agent(grass_patch_in_cell)
+                    self.model.schedule.remove(grass_patch_in_cell)
+                else:
+                    self.energy += grass_patch_in_cell.energy
+                    grass_patch_in_cell.fully_grown = False
+                    grass_patch_in_cell.energy = 0
 
             # Death
             if self.energy < 0:
