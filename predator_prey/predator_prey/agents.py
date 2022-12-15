@@ -2,7 +2,7 @@ import mesa
 from predator_prey.random_walk import RandomWalker
 
 
-class Prey(RandomWalker):
+class Prey(RandomWalker):0
     """
     A prey that walks around, reproduces (asexually), eats grass and gets eaten by predators.
     """
@@ -27,15 +27,22 @@ class Prey(RandomWalker):
         living = True
 
         if self.model.grass:
-            # Reduce energy
-            self.energy -= 1
+            # Reduce energy because of step
+            self.energy -= 1  #TODO: energy loss depend on step size
 
             # If there is grass available, eat it
             this_cell = self.model.grid.get_cell_list_contents([self.pos])
-            grass_patch = [obj for obj in this_cell if isinstance(obj, GrassPatch)][0]
-            if grass_patch.fully_grown:
-                self.energy += self.model.prey_gain_from_food
+            agents_in_this_cell = [obj for obj in this_cell if isinstance(obj, GrassPatch)]
+            print("agents_in_this_cell")
+            print(agents_in_this_cell)
+            grass_patch = agents_in_this_cell[0]
+            if grass_patch.energy < self.model.min_energy_grass_regrowth:
+                self.model.grid.remove_agent(grass_patch)
+                self.model.schedule.remove(grass_patch)
+
+                self.energy += grass_patch.energy
                 grass_patch.fully_grown = False
+                grass_patch.energy = 0
 
             # Death
             if self.energy < 0:
@@ -111,7 +118,6 @@ class Predator(RandomWalker):
 
         # Death or reproduction
         if self.energy < 0:
-            self.life_span= self.age
             self.model.grid.remove_agent(self)
             self.model.schedule.remove(self)
             if self.model.verbose_2:
@@ -119,7 +125,7 @@ class Predator(RandomWalker):
             self.model.datacollector.add_table_row(
                 "Lifespan_Predators", {
                     "predator_id": self.unique_id,
-                    "life_span": self.life_span,
+                    "life_span": self.age,
                 }
             )
         else:
@@ -142,27 +148,23 @@ class GrassPatch(mesa.Agent):
     A patch of grass that grows at a fixed rate and it is eaten by prey
     """
 
-    def __init__(self, unique_id, pos, model, fully_grown, countdown):
+    def __init__(self, unique_id, pos, model, fully_grown, energy):
         """
         Creates a new patch of grass
 
         Args:
             grown: (boolean) Whether the patch of grass is fully grown or not
-            countdown: Time for the patch of grass to be fully grown again
         """
         super().__init__(unique_id, model)
         self.fully_grown = fully_grown
-        self.countdown = countdown
         self.pos = pos
-        self.age = 0
-        self.life_span = None
+        self.energy = energy
+        self.regrowth_rate = self.model.grass_regrowth_rate
 
     def step(self):
         # print("grass_" + str(self.unique_id))
-        if not self.fully_grown:
-            if self.countdown <= 0:
-                # Set as fully grown
-                self.fully_grown = True
-                self.countdown = self.model.grass_regrowth_time
-            else:
-                self.countdown -= 1
+        if self.energy < self.model.max_energy_grass-self.model.grass_regrowth_rate:
+            self.energy += self.model.grass_regrowth_rate  # grass_regrowth_rate = 1
+        else:
+            self.energy = self.model.max_energy_grass
+            self.fully_grown = True

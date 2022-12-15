@@ -69,3 +69,15 @@ class RandomActivationByAllAgents(mesa.time.RandomActivation):
             if filter_func is None or filter_func(agent):
                 count += 1
         return count
+
+    def get_energy_count(
+            self,
+            type_class: Type[mesa.Agent],
+    ) -> float:
+        """
+        Returns the current number of agents of certain type in the queue that satisfy the filter function.
+        """
+        energy = 0
+        for agent in self.agents_by_type[type_class].values():
+            energy += agent.energy
+        return energy

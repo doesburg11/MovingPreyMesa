@@ -58,9 +58,15 @@ def predator_prey_portrayal(agent):
             portrayal["Color"] = ["#84e184", "#adebad", "#d6f5d6"]
         portrayal["Shape"] = "rect"
         portrayal["Filled"] = "true"
-        portrayal["Layer"] = 0
         portrayal["w"] = 1
         portrayal["h"] = 1
+
+        # tooltip content Prey
+        portrayal["type"] = "Grass"
+        portrayal["id"] = agent.unique_id
+        portrayal["energy"] = round(agent.energy, 2)
+        portrayal["regrowth rate"] = round(agent.regrowth_rate, 2)
+        portrayal["Layer"] = 1
 
     return portrayal
 
@@ -70,23 +76,36 @@ chart_element = mesa.visualization.ChartModule(
     [
         {"Label": "Predators", "Color": "#AA0000"},
         {"Label": "Prey", "Color": "#666666"},
-        {"Label": "Grass", "Color": "#00AA00"},
+        {"Label": "GrassPatches", "Color": "#00AA00"},
     ]
 )
 
+chart_element1 = mesa.visualization.ChartModule(
+    [
+        {"Label": "Predators_energy", "Color": "#AA0000"},
+    ]
+)
+
+chart_element2 = mesa.visualization.ChartModule(
+    [
+        {"Label": "Prey_energy", "Color": "#0000FF"},
+    ]
+)
+
+chart_element3 = mesa.visualization.ChartModule(
+    [
+        {"Label": "GrassPatch_energy", "Color": "#00AA00"},
+    ]
+)
 
 model_params = {
     # The following line is an example to showcase StaticText.
-    #"title": mesa.visualization.StaticText("Parameters:"),
-    #"initial_predators": mesa.visualization.Slider("Initial predator Population", initial_predators, 0, 300),
-    #"initial_prey": mesa.visualization.Slider(
-    #    "Initial prey Population", initial_prey, 0, 300
-    #),
+    "title": mesa.visualization.StaticText("Parameters:"),
+    "initial_predators": mesa.visualization.Slider("Initial predator Population", initial_predators, 0, 300),
+    "initial_prey": mesa.visualization.Slider(
+        "Initial prey Population", initial_prey, 0, 300
+    ),
     "grass": mesa.visualization.Checkbox("Grass Enabled", True),
-}
-
-"""
-    "grass_regrowth_time": mesa.visualization.Slider("Grass Regrowth Time", 20, 1, 50),
 
     "prey_reproduce": mesa.visualization.Slider(
         "prey Reproduction Rate", 0.04, 0.01, 1.0, 0.01
@@ -102,12 +121,20 @@ model_params = {
     "predator_gain_from_food": mesa.visualization.Slider(
         "Predator Gain From Food Rate", 20, 1, 50
     ),
-    "prey_gain_from_food": mesa.visualization.Slider("Prey Gain From Food", 4, 1, 10),
+    "grass_regrowth_rate": mesa.visualization.Slider(
+        "Grass Regrowth Rate",
+        1.0,
+        0.1,
+        5.0,
+        0.1,
+        description="Energy increase of a GrassPatch per step due to regrowth"
+    ),
 }
-"""
-
 
 server = mesa.visualization.ModularServer(
-    PredatorPrey, [canvas_element, chart_element], "Predator Prey Model", model_params
+    PredatorPrey,
+    [canvas_element, chart_element, chart_element1, chart_element2, chart_element3],
+    "Predator Prey Model",
+    model_params
 )
 server.port = 8521

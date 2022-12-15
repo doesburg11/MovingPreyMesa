@@ -1,10 +1,9 @@
 """
 Predator-Prey Model
-=====================
 
-Replication of the model found in NetLogo:
-    Wilensky, U. (1997). NetLogo Predator Prey model
-    and: Olsen(2015)
+Adjustment of:
+1.    Wilensky, U. (1997). NetLogo Predator Prey model
+2.    Olsen(2015)
 
 """
 
@@ -28,22 +27,27 @@ class PredatorPrey(mesa.Model):
     predator_gain_from_food = 20
 
     grass = False
-    grass_regrowth_time = 30
     prey_gain_from_food = 4
+    max_energy_grass = 20
+    min_energy_grass_regrowth = 5
+    """
+        max_energy_grass: the maximum energy level of grass
+        min_energy_grass_regrowth: when grass eaten below min_energy_grass_regrowth, grass regrowth will not occur
+    """
+    grass_regrowth_rate = 1.0  # pd
 
     verbose_0 = False  # agent count
     verbose_1 = False  # agent_id activation
     verbose_2 = False  # agent death
     verbose_3 = False  # agent birth
     verbose_4 = False  # agent life span table
-    verbose_5 = True  # agent life span average
+    verbose_5 = False  # agent life span average
 
     is_per_type_random_activated = False
     """
     False: agent are all random activated regardless of type,
     if True agents are random per agent type and random per class
     """
-
     description = (
         "A model for simulating Predator-Prey  modelling."
     )
@@ -54,12 +58,13 @@ class PredatorPrey(mesa.Model):
             height=10,
             initial_prey=10,
             initial_predators=5,
+
             prey_reproduce=0.04,
             predator_reproduce=0.05,
             predator_gain_from_food=20,
-            grass=False,
-            grass_regrowth_time=30,
-            prey_gain_from_food=4,
+
+            grass=True,
+            grass_regrowth_rate=1.0,
     ):
         """
         Create a new Predator-Prey model with the given parameters.
@@ -71,9 +76,7 @@ class PredatorPrey(mesa.Model):
             predator_reproduce: Probability of each predator reproducing each step
             predator_gain_from_food: Energy a predator gains from eating a prey
             grass: Whether to have the prey eat grass for energy
-            grass_regrowth_time: How long it takes for a grass patch to regrow
-                                 once it is eaten
-            prey_gain_from_food: Energy prey gain from grass, if enabled.
+            grass_regrowth_rate: Increase in energy per model step du to regrowth GrassPatch
         """
         super().__init__()
         # Set parameters
@@ -85,8 +88,7 @@ class PredatorPrey(mesa.Model):
         self.predator_reproduce = predator_reproduce
         self.predator_gain_from_food = predator_gain_from_food
         self.grass = grass
-        self.grass_regrowth_time = grass_regrowth_time
-        self.prey_gain_from_food = prey_gain_from_food
+        self.grass_regrowth_rate = grass_regrowth_rate
 
         self.schedule = RandomActivationByTypeFiltered(self) if self.is_per_type_random_activated else \
             RandomActivationByAllAgents(self)
@@ -95,13 +97,24 @@ class PredatorPrey(mesa.Model):
             model_reporters={
                 "Predators": lambda m: m.schedule.get_type_count(Predator),
                 "Prey": lambda m: m.schedule.get_type_count(Prey),
-                "Grass": lambda m: m.schedule.get_type_count(GrassPatch, lambda x: x.fully_grown),
+                "GrassPatches": lambda m: m.schedule.get_type_count(GrassPatch, lambda g: g.fully_grown),
+                "Predators_energy": lambda m: m.schedule.get_energy_count(Predator),
+                "Prey_energy": lambda m: m.schedule.get_energy_count(Prey),
+                "GrassPatch_energy": lambda m: m.schedule.get_energy_count(GrassPatch),
             },
             tables={
                 "Lifespan_Predators": ["predator_id", "life_span"],
                 "Lifespan_Prey": ["prey_id", "life_span", "killed"],
             },
         )
+
+        # Create grass patches
+        if self.grass:
+            for agent, x, y in self.grid.coord_iter():
+                fully_grown = True
+                patch = GrassPatch(self.next_id(), (x, y), self, fully_grown, self.max_energy_grass)
+                self.grid.place_agent(patch, (x, y))
+                self.schedule.add(patch)
 
         # Create predators
         for i in range(self.initial_predators):
@@ -121,19 +134,6 @@ class PredatorPrey(mesa.Model):
             self.grid.place_agent(prey, (x, y))
             self.schedule.add(prey)
 
-        # Create grass patches
-        if self.grass:
-            for agent, x, y in self.grid.coord_iter():
-                fully_grown = self.random.choice([True, False])
-                if fully_grown:
-                    countdown = self.grass_regrowth_time
-                else:
-                    countdown = self.random.randrange(self.grass_regrowth_time)
-
-                patch = GrassPatch(self.next_id(), (x, y), self, fully_grown, countdown)
-                self.grid.place_agent(patch, (x, y))
-                self.schedule.add(patch)
-
         self.running = True
         self.datacollector.collect(self)
 
@@ -145,7 +145,7 @@ class PredatorPrey(mesa.Model):
             print(self.datacollector.get_model_vars_dataframe())
         if self.verbose_4:
             print("tables:  ")
-            #print(self.datacollector.get_table_dataframe("Lifespan_Prey")["life_span"])
+            # print(self.datacollector.get_table_dataframe("Lifespan_Prey")["life_span"])
             print(self.datacollector.get_table_dataframe("Lifespan_Predators"))
             print(self.datacollector.get_table_dataframe("Lifespan_Prey"))
             print("model_reporters:")
