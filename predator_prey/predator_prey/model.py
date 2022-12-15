@@ -13,7 +13,6 @@ from predator_prey.scheduler import RandomActivationByTypeFiltered, RandomActiva
 
 from predator_prey.agents import Prey, Predator, GrassPatch
 
-
 class PredatorPrey(mesa.Model):
     height = 10
     width = 10
