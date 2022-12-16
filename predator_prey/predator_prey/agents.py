@@ -3,11 +3,6 @@ from predator_prey.random_walk import RandomWalker
 
 
 class Prey(RandomWalker):
-    """
-    A prey that walks around, reproduces (asexually), eats grass and gets eaten by predators.
-    """
-
-    energy = None
 
     def __init__(self, unique_id, pos, model, moore, energy):
         super().__init__(unique_id, pos, model, moore=moore)
@@ -32,8 +27,8 @@ class Prey(RandomWalker):
         # If there is grass available in cell, eat it
         agents_list_in_cell = self.model.grid.get_cell_list_contents([self.pos])
         grass_patches_list_in_cell = [obj for obj in agents_list_in_cell if isinstance(obj, GrassPatch)]
-        is_grass_patch_in_cell = len(grass_patches_list_in_cell) > 0
-        if is_grass_patch_in_cell:
+        if len(grass_patches_list_in_cell) > 0: # is_grass_patch_in_cell
+            # eat grass
             grass_patch_in_cell_to_eat = [obj for obj in agents_list_in_cell if isinstance(obj, GrassPatch)][0]
             new_energy_prey = self.energy + grass_patch_in_cell_to_eat.energy
             if self.model.verbose_1:
@@ -72,28 +67,22 @@ class Prey(RandomWalker):
             # creation lottery
             if self.random.random() < self.model.prey_reproduce:
                 # Create a new prey:
-                if self.model.verbose_3:
-                    print("*   prey_" + str(self.unique_id) + " creates at age " + str(self.age) + "[E:"+str(self.energy)+"]=>", end="")
-                self.energy /= 2
-                if self.model.verbose_3:
-                    print("["+str(self.energy)+"]")
+                new_energy_mother = self.energy / 2
+                new_energy_child = self.energy - new_energy_mother
                 created_id = self.model.next_id()
+                if self.model.verbose_3:
+                    print("prey_" + str(self.unique_id) + " creates prey_" + str(created_id) +
+                          " [E:"+str(new_energy_child)+"] at age " + str(self.age) +
+                          " [E:"+str(self.energy)+"]=>[E:"+str(new_energy_mother)+"]")
+                self.energy = new_energy_mother
                 created_prey = Prey(
-                    created_id, self.pos, self.model, self.moore, self.energy
+                    created_id, self.pos, self.model, self.moore, new_energy_child
                 )
                 self.model.grid.place_agent(created_prey, self.pos)
                 self.model.schedule.add(created_prey)
-                if self.model.verbose_3:
-                    print("*   prey_" + str(self.unique_id) + " creates at age " + str(self.age) + "[E:"+str(self.energy)+"]=> prey_"
-                          + str(created_id) + " at " + str(self.pos))
 
 
 class Predator(RandomWalker):
-    """
-    A predator that walks around, reproduces (asexually) and eats prey.
-    """
-
-    energy = None
 
     def __init__(self, unique_id, pos, model, moore, energy):
         super().__init__(unique_id, pos, model, moore=moore)
@@ -114,8 +103,7 @@ class Predator(RandomWalker):
         # TODO: eat prey with most energy
         agents_list_in_cell = self.model.grid.get_cell_list_contents([self.pos])
         prey_list_in_cell = [obj for obj in agents_list_in_cell if isinstance(obj, Prey)]
-        is_prey_in_cell = len(prey_list_in_cell) > 0
-        if is_prey_in_cell:
+        if len(prey_list_in_cell) > 0:  # if is_prey_list_in_cell
             # eat random prey
             # TODO: eat prey with most energy or weakest prey if prey can resist?
             prey_in_cell_to_eat = self.random.choice(prey_list_in_cell)
@@ -133,7 +121,7 @@ class Predator(RandomWalker):
             if self.model.verbose_1:
                 print("killed and removed")
             if self.model.verbose_2:
-                print("*   prey_" + str(prey_in_cell_to_eat.unique_id) + " dies at age " + str(prey_in_cell_to_eat.age) +
+                print("prey_" + str(prey_in_cell_to_eat.unique_id) + " dies at age " + str(prey_in_cell_to_eat.age) +
                       " of being eaten by predator_" + str(self.unique_id))
             self.model.datacollector.add_table_row(
                 "Lifespan_Prey", {
@@ -159,22 +147,22 @@ class Predator(RandomWalker):
             # creation lottery
             if self.random.random() < self.model.predator_reproduce:
                 # Create a new predator
-                self.energy /= 2
+                new_energy_mother = self.energy / 2
+                new_energy_child = self.energy - new_energy_mother
                 created_id = self.model.next_id()
+                if self.model.verbose_3:
+                    print("predator_" + str(self.unique_id) + " creates predator_" + str(created_id) +
+                          " [E:"+str(new_energy_child)+"] at age " + str(self.age) +
+                          " [E:"+str(self.energy)+"]=>[E:"+str(new_energy_mother)+"]")
+                self.energy = new_energy_mother
                 created_predator = Predator(
-                    created_id, self.pos, self.model, self.moore, self.energy
+                    created_id, self.pos, self.model, self.moore, new_energy_child
                 )
                 self.model.grid.place_agent(created_predator, self.pos)
                 self.model.schedule.add(created_predator)
-                if self.model.verbose_3:
-                    print("*   predator_" + str(self.unique_id) + " creates at age " + str(self.age) + " predator_"
-                          + str(created_id) + " at " + str(self.pos))
 
 
 class GrassPatch(mesa.Agent):
-    """
-    A patch of grass that grows at a fixed rate and it is eaten by prey
-    """
 
     def __init__(self, unique_id, pos, model, fully_grown, energy):
         """

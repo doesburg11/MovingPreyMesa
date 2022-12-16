@@ -25,7 +25,6 @@ class PredatorPrey(mesa.Model):
 
     predator_gain_from_food = 20
 
-    grass = False
     prey_gain_from_food = 4
     max_energy_grass = 20
     min_energy_grass_regrowth = 5
@@ -38,7 +37,7 @@ class PredatorPrey(mesa.Model):
     verbose_0 = False  # agent count
     verbose_1 = True  # agent_id activation move and eat
     verbose_2 = False  # agent death
-    verbose_3 = False  # agent birth
+    verbose_3 = True  # agent birth
     verbose_4 = False  # agent life span table
     verbose_5 = False  # agent life span average
 
