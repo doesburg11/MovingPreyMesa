@@ -36,7 +36,7 @@ class PredatorPrey(mesa.Model):
     grass_regrowth_rate = 1.0  # pd
 
     verbose_0 = False  # agent count
-    verbose_1 = False  # agent_id activation
+    verbose_1 = True  # agent_id activation move and eat
     verbose_2 = False  # agent death
     verbose_3 = False  # agent birth
     verbose_4 = False  # agent life span table
@@ -74,7 +74,6 @@ class PredatorPrey(mesa.Model):
             prey_reproduce: Probability of each prey reproducing each step
             predator_reproduce: Probability of each predator reproducing each step
             predator_gain_from_food: Energy a predator gains from eating a prey
-            grass: Whether to have the prey eat grass for energy
             grass_regrowth_rate: Increase in energy per model step du to regrowth GrassPatch
         """
         super().__init__()
@@ -86,9 +85,10 @@ class PredatorPrey(mesa.Model):
         self.prey_reproduce = prey_reproduce
         self.predator_reproduce = predator_reproduce
         self.predator_gain_from_food = predator_gain_from_food
-        self.grass = grass
         self.grass_regrowth_rate = grass_regrowth_rate
 
+        self.initial_energy_predators = 40.0
+        self.initial_energy_prey = 25.0
         self.schedule = RandomActivationByTypeFiltered(self) if self.is_per_type_random_activated else \
             RandomActivationByAllAgents(self)
         self.grid = mesa.space.MultiGrid(self.width, self.height, torus=True)
@@ -108,18 +108,17 @@ class PredatorPrey(mesa.Model):
         )
 
         # Create grass patches
-        if self.grass:
-            for agent, x, y in self.grid.coord_iter():
-                fully_grown = True
-                patch = GrassPatch(self.next_id(), (x, y), self, fully_grown, self.max_energy_grass)
-                self.grid.place_agent(patch, (x, y))
-                self.schedule.add(patch)
+        for agent, x, y in self.grid.coord_iter():
+            fully_grown = True
+            grass_patch = GrassPatch(self.next_id(), (x, y), self, fully_grown, self.max_energy_grass)
+            self.grid.place_agent(grass_patch, (x, y))
+            self.schedule.add(grass_patch)
 
         # Create predators
         for i in range(self.initial_predators):
             x = self.random.randrange(self.width)
             y = self.random.randrange(self.height)
-            energy = self.random.randrange(2 * self.predator_gain_from_food)
+            energy = self.initial_energy_predators
             predator = Predator(self.next_id(), (x, y), self, True, energy)
             self.grid.place_agent(predator, (x, y))
             self.schedule.add(predator)
@@ -128,7 +127,7 @@ class PredatorPrey(mesa.Model):
         for i in range(self.initial_prey):
             x = self.random.randrange(self.width)
             y = self.random.randrange(self.height)
-            energy = self.random.randrange(2 * self.prey_gain_from_food)
+            energy = self.initial_energy_prey
             prey = Prey(self.next_id(), (x, y), self, True, energy)
             self.grid.place_agent(prey, (x, y))
             self.schedule.add(prey)

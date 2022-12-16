@@ -105,7 +105,6 @@ model_params = {
     "initial_prey": mesa.visualization.Slider(
         "Initial prey Population", initial_prey, 0, 300
     ),
-    "grass": mesa.visualization.Checkbox("Grass Enabled", True),
 
     "prey_reproduce": mesa.visualization.Slider(
         "prey Reproduction Rate", 0.04, 0.01, 1.0, 0.01

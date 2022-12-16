@@ -9,7 +9,7 @@ class Prey(RandomWalker):
 
     energy = None
 
-    def __init__(self, unique_id, pos, model, moore, energy=None):
+    def __init__(self, unique_id, pos, model, moore, energy):
         super().__init__(unique_id, pos, model, moore=moore)
         self.energy = energy
         self.age = 0
@@ -19,59 +19,73 @@ class Prey(RandomWalker):
         A model step. Moves, ages, then eats grass or gets eaten or reproduce.
         """
         if self.model.verbose_1:
-            print("prey_" + str(self.unique_id) + ": " + str(self.pos) + "=>", end="")
+            print("prey_" + str(self.unique_id) + " moves [E:" + str(self.energy) + "]: " + str(self.pos) + "=>",
+                  end="")
         self.random_move()
-        if self.model.verbose_1:
-            print(self.pos)
+        # Reduce energy because of step
+        self.energy -= 1  # TODO: energy loss depend on step size
         self.age += 1
         living = True
+        if self.model.verbose_1:
+            print(str(self.pos) + " [E:" + str(self.energy) + "]")
 
-        if self.model.grass:
-            # Reduce energy because of step
-            self.energy -= 1  #TODO: energy loss depend on step size
+        # If there is grass available in cell, eat it
+        agents_list_in_cell = self.model.grid.get_cell_list_contents([self.pos])
+        grass_patches_list_in_cell = [obj for obj in agents_list_in_cell if isinstance(obj, GrassPatch)]
+        is_grass_patch_in_cell = len(grass_patches_list_in_cell) > 0
+        if is_grass_patch_in_cell:
+            grass_patch_in_cell_to_eat = [obj for obj in agents_list_in_cell if isinstance(obj, GrassPatch)][0]
+            new_energy_prey = self.energy + grass_patch_in_cell_to_eat.energy
+            if self.model.verbose_1:
+                print("prey_" + str(self.unique_id) + " eats [E:" + str(self.energy) + "]=>[" + str(
+                    new_energy_prey) + "]")
+                print("grass_" + str(grass_patch_in_cell_to_eat.unique_id) + " eaten " + str(
+                    grass_patch_in_cell_to_eat.pos) + " [E:" + str(grass_patch_in_cell_to_eat.energy) + "]=>", end="")
+            if grass_patch_in_cell_to_eat.energy < self.model.min_energy_grass_regrowth:
+                self.energy = new_energy_prey
+                self.model.grid.remove_agent(grass_patch_in_cell_to_eat)
+                self.model.schedule.remove(grass_patch_in_cell_to_eat)
+                if self.model.verbose_1:
+                    print("killed and removed")
+            else:
+                self.energy = new_energy_prey
+                grass_patch_in_cell_to_eat.fully_grown = False
+                grass_patch_in_cell_to_eat.energy = 0
+                if self.model.verbose_1:
+                    print("[E:" + str(grass_patch_in_cell_to_eat.energy) + "]")
 
-            # If there is grass available, eat it
-            agents_list_in__cell = self.model.grid.get_cell_list_contents([self.pos])
-            print("grass_patches_in_cell: "+str([obj for obj in agents_list_in__cell if isinstance(obj, GrassPatch)]))
-            print("# grass_patches: "+str(len([obj for obj in agents_list_in__cell if isinstance(obj, GrassPatch)])))
-            grass_patches_list_in_cell = [obj for obj in agents_list_in__cell if isinstance(obj, GrassPatch)]
-            is_grass_patch_in_cell = len(grass_patches_list_in_cell) > 0
-            if is_grass_patch_in_cell:
-                grass_patch_in_cell = [obj for obj in agents_list_in__cell if isinstance(obj, GrassPatch)][0]
-                if grass_patch_in_cell.energy < self.model.min_energy_grass_regrowth:
-                    self.model.grid.remove_agent(grass_patch_in_cell)
-                    self.model.schedule.remove(grass_patch_in_cell)
-                else:
-                    self.energy += grass_patch_in_cell.energy
-                    grass_patch_in_cell.fully_grown = False
-                    grass_patch_in_cell.energy = 0
-
-            # Death
-            if self.energy < 0:
-                self.model.grid.remove_agent(self)
-                self.model.schedule.remove(self)
-                living = False
-                if self.model.verbose_2:
-                    print("*   prey_" + str(self.unique_id) + " dies at age " + str(self.age) + " of starvation")
-                self.model.datacollector.add_table_row(
-                    "Lifespan_Prey", {
-                        "prey_id": self.unique_id,
-                        "life_span": self.age,
-                        "killed": False,
-                    }
-                )
-
-        if living and self.random.random() < self.model.prey_reproduce:
-            # Create a new prey:
-            if self.model.grass:
+        # Death or reproduction
+        if self.energy < 0:
+            self.model.grid.remove_agent(self)
+            self.model.schedule.remove(self)
+            living = False
+            if self.model.verbose_2:
+                print("*   prey_" + str(self.unique_id) + " dies at age " + str(self.age) + " of starvation")
+            self.model.datacollector.add_table_row(
+                "Lifespan_Prey", {
+                    "prey_id": self.unique_id,
+                    "life_span": self.age,
+                    "killed": False,
+                }
+            )
+        else:
+            # creation lottery
+            if self.random.random() < self.model.prey_reproduce:
+                # Create a new prey:
+                if self.model.verbose_3:
+                    print("*   prey_" + str(self.unique_id) + " creates at age " + str(self.age) + "[E:"+str(self.energy)+"]=>", end="")
                 self.energy /= 2
-            created_id = self.model.next_id()
-            lamb = Prey(created_id, self.pos, self.model, self.moore, self.energy)
-            self.model.grid.place_agent(lamb, self.pos)
-            self.model.schedule.add(lamb)
-            if self.model.verbose_3:
-                print("*   prey_" + str(self.unique_id) + " creates at age " + str(self.age) + " prey_"
-                      + str(created_id) + " at " + str(self.pos))
+                if self.model.verbose_3:
+                    print("["+str(self.energy)+"]")
+                created_id = self.model.next_id()
+                created_prey = Prey(
+                    created_id, self.pos, self.model, self.moore, self.energy
+                )
+                self.model.grid.place_agent(created_prey, self.pos)
+                self.model.schedule.add(created_prey)
+                if self.model.verbose_3:
+                    print("*   prey_" + str(self.unique_id) + " creates at age " + str(self.age) + "[E:"+str(self.energy)+"]=> prey_"
+                          + str(created_id) + " at " + str(self.pos))
 
 
 class Predator(RandomWalker):
@@ -81,39 +95,50 @@ class Predator(RandomWalker):
 
     energy = None
 
-    def __init__(self, unique_id, pos, model, moore, energy=None):
+    def __init__(self, unique_id, pos, model, moore, energy):
         super().__init__(unique_id, pos, model, moore=moore)
         self.energy = energy
         self.age = 0
 
     def step(self):
         if self.model.verbose_1:
-            print("predator_" + str(self.unique_id) + ": " + str(self.pos) + "=>", end="")
+            print("predator_" + str(self.unique_id) + " moves [E:" + str(self.energy) + "]: " + str(self.pos) + "=>",
+                  end="")
         self.random_move()
-        if self.model.verbose_1:
-            print(self.pos)
         self.age += 1
         self.energy -= 1
+        if self.model.verbose_1:
+            print(str(self.pos) + " [E:" + str(self.energy) + "]")
 
-        # If there are prey present, eat one
-        x, y = self.pos
-        this_cell = self.model.grid.get_cell_list_contents([self.pos])
-        prey = [obj for obj in this_cell if isinstance(obj, Prey)]
-        if len(prey) > 0:
+        # If there are prey present, eat one at random
+        # TODO: eat prey with most energy
+        agents_list_in_cell = self.model.grid.get_cell_list_contents([self.pos])
+        prey_list_in_cell = [obj for obj in agents_list_in_cell if isinstance(obj, Prey)]
+        is_prey_in_cell = len(prey_list_in_cell) > 0
+        if is_prey_in_cell:
             # eat random prey
             # TODO: eat prey with most energy or weakest prey if prey can resist?
-            prey_to_eat = self.random.choice(prey)
-            self.energy += self.model.predator_gain_from_food
+            prey_in_cell_to_eat = self.random.choice(prey_list_in_cell)
+            new_energy_predator = self.energy + prey_in_cell_to_eat.energy
+            if self.model.verbose_1:
+                print("predator_" + str(self.unique_id) + " eats [E:" + str(self.energy) + "]=>[" + str(
+                    new_energy_predator) + "]")
+                print("prey_" + str(prey_in_cell_to_eat.unique_id) + " eaten " + str(
+                    prey_in_cell_to_eat.pos) + " [E:" + str(prey_in_cell_to_eat.energy) + "]=>", end="")
+
             # Kill the prey
-            self.model.grid.remove_agent(prey_to_eat)
-            self.model.schedule.remove(prey_to_eat)
+            self.energy = new_energy_predator
+            self.model.grid.remove_agent(prey_in_cell_to_eat)
+            self.model.schedule.remove(prey_in_cell_to_eat)
+            if self.model.verbose_1:
+                print("killed and removed")
             if self.model.verbose_2:
-                print("*   prey_" + str(prey_to_eat.unique_id) + " dies at age " + str(prey_to_eat.age) +
+                print("*   prey_" + str(prey_in_cell_to_eat.unique_id) + " dies at age " + str(prey_in_cell_to_eat.age) +
                       " of being eaten by predator_" + str(self.unique_id))
             self.model.datacollector.add_table_row(
                 "Lifespan_Prey", {
-                    "prey_id": prey_to_eat.unique_id,
-                    "life_span": prey_to_eat.age,
+                    "prey_id": prey_in_cell_to_eat.unique_id,
+                    "life_span": prey_in_cell_to_eat.age,
                     "killed": True,
                 }
             )
@@ -131,15 +156,16 @@ class Predator(RandomWalker):
                 }
             )
         else:
+            # creation lottery
             if self.random.random() < self.model.predator_reproduce:
-                # Create a new predator cub
+                # Create a new predator
                 self.energy /= 2
                 created_id = self.model.next_id()
-                cub = Predator(
+                created_predator = Predator(
                     created_id, self.pos, self.model, self.moore, self.energy
                 )
-                self.model.grid.place_agent(cub, cub.pos)
-                self.model.schedule.add(cub)
+                self.model.grid.place_agent(created_predator, self.pos)
+                self.model.schedule.add(created_predator)
                 if self.model.verbose_3:
                     print("*   predator_" + str(self.unique_id) + " creates at age " + str(self.age) + " predator_"
                           + str(created_id) + " at " + str(self.pos))
@@ -165,7 +191,7 @@ class GrassPatch(mesa.Agent):
 
     def step(self):
         # print("grass_" + str(self.unique_id))
-        if self.energy < self.model.max_energy_grass-self.model.grass_regrowth_rate:
+        if self.energy < self.model.max_energy_grass - self.model.grass_regrowth_rate:
             self.energy += self.model.grass_regrowth_rate  # grass_regrowth_rate = 1
         else:
             self.energy = self.model.max_energy_grass
