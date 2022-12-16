@@ -117,9 +117,6 @@ model_params = {
         0.01,
         description="The rate at which predator agents reproduce.",
     ),
-    "predator_gain_from_food": mesa.visualization.Slider(
-        "Predator Gain From Food Rate", 20, 1, 50
-    ),
     "grass_regrowth_rate": mesa.visualization.Slider(
         "Grass Regrowth Rate",
         1.0,

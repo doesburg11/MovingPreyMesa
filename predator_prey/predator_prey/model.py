@@ -23,8 +23,6 @@ class PredatorPrey(mesa.Model):
     prey_reproduce = 0.04
     predator_reproduce = 0.05
 
-    predator_gain_from_food = 20
-
     prey_gain_from_food = 4
     max_energy_grass = 20
     min_energy_grass_regrowth = 5
@@ -59,7 +57,6 @@ class PredatorPrey(mesa.Model):
 
             prey_reproduce=0.04,
             predator_reproduce=0.05,
-            predator_gain_from_food=20,
 
             grass=True,
             grass_regrowth_rate=1.0,
@@ -72,7 +69,6 @@ class PredatorPrey(mesa.Model):
             initial_predators: Number of predators to start with
             prey_reproduce: Probability of each prey reproducing each step
             predator_reproduce: Probability of each predator reproducing each step
-            predator_gain_from_food: Energy a predator gains from eating a prey
             grass_regrowth_rate: Increase in energy per model step du to regrowth GrassPatch
         """
         super().__init__()
@@ -83,7 +79,6 @@ class PredatorPrey(mesa.Model):
         self.initial_predators = initial_predators
         self.prey_reproduce = prey_reproduce
         self.predator_reproduce = predator_reproduce
-        self.predator_gain_from_food = predator_gain_from_food
         self.grass_regrowth_rate = grass_regrowth_rate
 
         self.initial_energy_predators = 40.0
