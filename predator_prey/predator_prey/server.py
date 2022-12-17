@@ -71,7 +71,13 @@ def predator_prey_portrayal(agent):
     return portrayal
 
 
-canvas_element = mesa.visualization.CanvasGrid(predator_prey_portrayal, grid_with, grid_height, 500, 500)
+canvas_element = mesa.visualization.CanvasGrid(
+    predator_prey_portrayal,
+    grid_with,
+    grid_height,
+    500,
+    500)
+
 chart_element = mesa.visualization.ChartModule(
     [
         {"Label": "Predators", "Color": "#AA0000"},
@@ -99,15 +105,28 @@ chart_element3 = mesa.visualization.ChartModule(
 )
 
 model_params = {
-    # The following line is an example to showcase StaticText.
-    "title": mesa.visualization.StaticText("Parameters:"),
-    "initial_predators": mesa.visualization.Slider("Initial predator Population", initial_predators, 0, 300),
+    "title": mesa.visualization.StaticText(
+        "Parameters:"
+    ),  # StaticText.
+    "initial_predators": mesa.visualization.Slider(
+        "Initial predator Population",
+        initial_predators,
+        0,
+        300
+    ),
     "initial_prey": mesa.visualization.Slider(
-        "Initial prey Population", initial_prey, 0, 300
+        "Initial prey Population",
+        initial_prey,
+        0,
+        300
     ),
 
     "prey_reproduce": mesa.visualization.Slider(
-        "prey Reproduction Rate", 0.04, 0.01, 1.0, 0.01
+        "prey Reproduction Rate",
+        0.04,
+        0.01,
+        1.0,
+        0.01
     ),
     "predator_reproduce": mesa.visualization.Slider(
         "predator Reproduction Rate",

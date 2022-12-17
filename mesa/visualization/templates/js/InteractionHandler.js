@@ -30,6 +30,7 @@ const InteractionHandler = function (width, height, gridWidth, gridHeight, ctx) 
 
   // list of standard rendering features to ignore (and key-values in the portrayal will be added )
   const ignoredFeatures = [
+    "text",  //pd added to attempt deleting text from tooltip
     "Shape",
     "Filled",
     "Color",

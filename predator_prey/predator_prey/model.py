@@ -13,6 +13,7 @@ from predator_prey.scheduler import RandomActivationByTypeFiltered, RandomActiva
 
 from predator_prey.agents import Prey, Predator, GrassPatch
 
+
 class PredatorPrey(mesa.Model):
     height = 10
     width = 10
@@ -54,11 +55,8 @@ class PredatorPrey(mesa.Model):
             height=10,
             initial_prey=10,
             initial_predators=5,
-
             prey_reproduce=0.04,
             predator_reproduce=0.05,
-
-            grass=True,
             grass_regrowth_rate=1.0,
     ):
         """
@@ -69,7 +67,7 @@ class PredatorPrey(mesa.Model):
             initial_predators: Number of predators to start with
             prey_reproduce: Probability of each prey reproducing each step
             predator_reproduce: Probability of each predator reproducing each step
-            grass_regrowth_rate: Increase in energy per model step du to regrowth GrassPatch
+            grass_regrowth_rate: Increase in energy per model step due to regrowth GrassPatch
         """
         super().__init__()
         # Set parameters
