@@ -16,7 +16,7 @@ const stepModelButton = document.getElementById("step");
 const resetModelButton = document.getElementById("reset");
 const stepDisplay = document.getElementById("currentStep");
 
-/* const stepAgentModelButton = document.getElementById("step-agent"); pd*/
+const stepAgentModelButton = document.getElementById("step-agent");
 
 
 /**
@@ -38,6 +38,8 @@ function ModelController(tick = 0, fps = 3, running = false, finished = false) {
     this.step();
     startModelButton.firstElementChild.innerText = "Stop";
   };
+
+
 
   /** Stop the model */
   this.stop = function stop() {
@@ -120,11 +122,24 @@ startModelButton.onclick = () => {
     controller.start();
   }
 };
+
 stepModelButton.onclick = () => {
   if (!controller.running & !controller.finished) {
     controller.step();
   }
 };
+
+/*pd*/
+stepAgentModelButton.onclick = () => {
+  /*if (!controller.running & !controller.finished) {
+    controller.step();*/
+
+  stepAgentModelButton.firstElementChild.innerText = "Stop";
+  }
+};
+
+
+
 
 /*pd
 stepAgentModelButton.onclick = () => {

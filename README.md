@@ -29,7 +29,9 @@ mesa runserver boltzmann_wealth_model_network
 
 TODO:
 -Step agent in addition to step model in viz.
--add average_life_span in viz
+
+-add average_life_span in viz, test-lifespan.py
+
 -energy as a guide for success between Predator and Prey 
 
 
