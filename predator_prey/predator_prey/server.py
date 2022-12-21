@@ -3,17 +3,10 @@ import mesa
 from predator_prey.agents import Predator, Prey, GrassPatch
 from predator_prey.model import PredatorPrey
 
-grid_with = 5
-grid_height = 5
-initial_prey = 5
-initial_predators = 3
-
 
 def predator_prey_portrayal(agent):
     if agent is None:
         return
-
-
 
     portrayal = {}
 
@@ -75,10 +68,10 @@ def predator_prey_portrayal(agent):
 
 canvas_element = mesa.visualization.CanvasGrid(
     predator_prey_portrayal,
-    grid_with,
-    grid_height,
-    500,
-    500)
+    PredatorPrey.n_grid_cells_width,
+    PredatorPrey.n_grid_cells_height,
+    PredatorPrey.canvas_width,
+    PredatorPrey.canvas_height)
 
 chart_element = mesa.visualization.ChartModule(
     [
@@ -97,31 +90,19 @@ chart_element1 = mesa.visualization.ChartModule(
     ]
 )
 
-chart_element2 = mesa.visualization.ChartModule(
-    [
-        {"Label": "Prey_energy", "Color": "#0000FF"},
-    ]
-)
-
-chart_element3 = mesa.visualization.ChartModule(
-    [
-        {"Label": "GrassPatch_energy", "Color": "#00AA00"},
-    ]
-)
-
 model_params = {
     "title": mesa.visualization.StaticText(
         "Parameters:"
     ),  # StaticText.
     "initial_predators": mesa.visualization.Slider(
         "Initial predator Population",
-        initial_predators,
+        PredatorPrey.initial_predators,
         0,
         300
     ),
     "initial_prey": mesa.visualization.Slider(
         "Initial prey Population",
-        initial_prey,
+        PredatorPrey.initial_prey,
         0,
         300
     ),

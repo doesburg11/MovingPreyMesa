@@ -15,17 +15,21 @@ from predator_prey.agents import Prey, Predator, GrassPatch
 
 
 class PredatorPrey(mesa.Model):
-    height = 5
-    width = 5
 
-    initial_predators = 5
+    n_grid_cells_height = 15
+    n_grid_cells_width = 25
+    canvas_width = 500
+    canvas_height = canvas_width*(n_grid_cells_height/n_grid_cells_width)
+
+
+    initial_predators = 3
     homeostatic_energy_predator = 1
     """yet to implement; energy loss due to homeostasis"""
     """for simplicity reason we translate evolutionary fitness into energy"""
     degradation_energy_predator = 0.1
     """ yet to implement; energy destruction to degradation of (body/living-)structure; second law of thermodynamics"""
 
-    initial_prey = 10
+    initial_prey = 5
     homeostatic_energy_prey = 1  # yet to implement
 
     prey_reproduce = 0.04
@@ -42,14 +46,13 @@ class PredatorPrey(mesa.Model):
         regrow. 
     """
 
-
     verbose_0 = True  # agent count
     verbose_1 = True  # agent_id activation move and eat
     verbose_2 = True  # agent death
     verbose_3 = True  # agent birth
     verbose_4 = False  # agent life span table
     verbose_5 = True  # agent average life span
-    verbose_6 = False # table agent count and cumulative energy per type
+    verbose_6 = False  # table agent count and cumulative energy per type
 
     is_per_type_random_activated = False
     """
@@ -62,8 +65,8 @@ class PredatorPrey(mesa.Model):
 
     def __init__(
             self,
-            width=5,
-            height=5,
+            n_grid_cells_width=n_grid_cells_width,
+            n_grid_cells_height=n_grid_cells_height,
             initial_prey=10,
             initial_predators=5,
             prey_reproduce=0.04,
@@ -82,8 +85,8 @@ class PredatorPrey(mesa.Model):
         """
         super().__init__()
         # Set parameters
-        self.width = width
-        self.height = height
+        self.n_grid_cells_width = n_grid_cells_width
+        self.n_grid_cells_height = n_grid_cells_height
         self.initial_prey = initial_prey
         self.initial_predators = initial_predators
         self.prey_reproduce = prey_reproduce
@@ -94,7 +97,7 @@ class PredatorPrey(mesa.Model):
         self.initial_energy_prey = 25.0
         self.schedule = RandomActivationByTypeFiltered(self) if self.is_per_type_random_activated else \
             RandomActivationByAllAgents(self)
-        self.grid = mesa.space.MultiGrid(self.width, self.height, torus=True)
+        self.grid = mesa.space.MultiGrid(self.n_grid_cells_width, self.n_grid_cells_height, torus=True)
         self.datacollector = mesa.DataCollector(
             model_reporters={
                 "Predators": lambda m: m.schedule.get_type_count(Predator),
@@ -119,8 +122,8 @@ class PredatorPrey(mesa.Model):
 
         # Create predators
         for i in range(self.initial_predators):
-            x = self.random.randrange(self.width)
-            y = self.random.randrange(self.height)
+            x = self.random.randrange(self.n_grid_cells_width)
+            y = self.random.randrange(self.n_grid_cells_height)
             energy = self.initial_energy_predators
             predator = Predator(self.next_id(), (x, y), self, True, energy)
             self.grid.place_agent(predator, (x, y))
@@ -128,8 +131,8 @@ class PredatorPrey(mesa.Model):
 
         # Create prey:
         for i in range(self.initial_prey):
-            x = self.random.randrange(self.width)
-            y = self.random.randrange(self.height)
+            x = self.random.randrange(self.n_grid_cells_width)
+            y = self.random.randrange(self.n_grid_cells_height)
             energy = self.initial_energy_prey
             prey = Prey(self.next_id(), (x, y), self, True, energy)
             self.grid.place_agent(prey, (x, y))
@@ -154,10 +157,10 @@ class PredatorPrey(mesa.Model):
         if self.verbose_5:
             print("-----------------------------------------------------------")
             print("Average life time Prey: ", end="")
-            print(round(self.datacollector.get_table_dataframe("Lifespan_Prey")["life_span"].mean(),1))
+            print(round(self.datacollector.get_table_dataframe("Lifespan_Prey")["life_span"].mean(), 1))
         if self.verbose_5:
             print("Average life time Predators: ", end="")
-            print(round(self.datacollector.get_table_dataframe("Lifespan_Predators")["life_span"].mean(),1))
+            print(round(self.datacollector.get_table_dataframe("Lifespan_Predators")["life_span"].mean(), 1))
             print("-----------------------------------------------------------")
 
         if self.verbose_6:
