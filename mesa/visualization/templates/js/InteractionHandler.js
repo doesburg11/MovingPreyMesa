@@ -119,7 +119,7 @@ const InteractionHandler = function (width, height, gridWidth, gridHeight, ctx) 
     // Remove the prior event listener to avoid creating a new one every step
     ctx.canvas.removeEventListener("mousemove", listener);
 
-    // define the event litser for this step
+    // define the event listener for this step
     listener = function (event) {
       // clear the previous interaction
       ctx.clearRect(0, 0, width, height);

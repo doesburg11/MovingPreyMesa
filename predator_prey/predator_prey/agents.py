@@ -4,6 +4,8 @@ from predator_prey.random_walk import RandomWalker
 
 class Prey(RandomWalker):
 
+    name = "prey"
+
     def __init__(self, unique_id, pos, model, moore, energy):
         super().__init__(unique_id, pos, model, moore=moore)
         self.energy = energy
@@ -14,11 +16,12 @@ class Prey(RandomWalker):
         A model step. Moves, ages, then eats grass or gets eaten or reproduce.
         """
         if self.model.verbose_1:
+            print("-----------------------------------------------------------")
             print("prey_" + str(self.unique_id) + " moves [E:" + str(self.energy) + "]: " + str(self.pos) + "=>",
                   end="")
         self.random_move()
         # Reduce energy because of step
-        self.energy -= 1  # TODO: energy loss depend on step size
+        self.energy -= 1
         self.age += 1
         living = True
         if self.model.verbose_1:
@@ -84,6 +87,9 @@ class Prey(RandomWalker):
 
 class Predator(RandomWalker):
 
+    name = "predator"
+
+
     def __init__(self, unique_id, pos, model, moore, energy):
         super().__init__(unique_id, pos, model, moore=moore)
         self.energy = energy
@@ -91,6 +97,7 @@ class Predator(RandomWalker):
 
     def step(self):
         if self.model.verbose_1:
+            print("-----------------------------------------------------------")
             print("predator_" + str(self.unique_id) + " moves [E:" + str(self.energy) + "]: " + str(self.pos) + "=>",
                   end="")
         self.random_move()
@@ -100,12 +107,10 @@ class Predator(RandomWalker):
             print(str(self.pos) + " [E:" + str(self.energy) + "]")
 
         # If there are prey present, eat one at random
-        # TODO: eat prey with most energy
         agents_list_in_cell = self.model.grid.get_cell_list_contents([self.pos])
         prey_list_in_cell = [obj for obj in agents_list_in_cell if isinstance(obj, Prey)]
         if len(prey_list_in_cell) > 0:  # if is_prey_list_in_cell
             # eat random prey
-            # TODO: eat prey with most energy or weakest prey if prey can resist?
             prey_in_cell_to_eat = self.random.choice(prey_list_in_cell)
             new_energy_predator = self.energy + prey_in_cell_to_eat.energy
             if self.model.verbose_1:
@@ -164,18 +169,21 @@ class Predator(RandomWalker):
 
 class GrassPatch(mesa.Agent):
 
+    name = "grass"
+
     def __init__(self, unique_id, pos, model, fully_grown, energy):
         """
         Creates a new patch of grass
 
         Args:
-            grown: (boolean) Whether the patch of grass is fully grown or not
+            fully_grown: (boolean) Whether the patch of grass is fully grown or not
         """
         super().__init__(unique_id, model)
         self.fully_grown = fully_grown
         self.pos = pos
         self.energy = energy
         self.regrowth_rate = self.model.grass_regrowth_rate
+
 
     def step(self):
         # print("grass_" + str(self.unique_id))

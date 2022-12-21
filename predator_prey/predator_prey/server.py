@@ -3,15 +3,17 @@ import mesa
 from predator_prey.agents import Predator, Prey, GrassPatch
 from predator_prey.model import PredatorPrey
 
-initial_prey = 10
-initial_predators = 5
-grid_with = 10
-grid_height = 10
+grid_with = 5
+grid_height = 5
+initial_prey = 5
+initial_predators = 3
 
 
 def predator_prey_portrayal(agent):
     if agent is None:
         return
+
+
 
     portrayal = {}
 
@@ -89,6 +91,9 @@ chart_element = mesa.visualization.ChartModule(
 chart_element1 = mesa.visualization.ChartModule(
     [
         {"Label": "Predators_energy", "Color": "#AA0000"},
+        {"Label": "Prey_energy", "Color": "#0000FF"},
+        {"Label": "GrassPatch_energy", "Color": "#00AA00"},
+
     ]
 )
 
@@ -148,7 +153,7 @@ model_params = {
 
 server = mesa.visualization.ModularServer(
     PredatorPrey,
-    [canvas_element, chart_element, chart_element1, chart_element2, chart_element3],
+    [canvas_element, chart_element, chart_element1],
     "Predator Prey Model",
     model_params
 )

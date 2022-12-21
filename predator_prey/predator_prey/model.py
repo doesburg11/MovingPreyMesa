@@ -15,30 +15,41 @@ from predator_prey.agents import Prey, Predator, GrassPatch
 
 
 class PredatorPrey(mesa.Model):
-    height = 10
-    width = 10
+    height = 5
+    width = 5
+
+    initial_predators = 5
+    homeostatic_energy_predator = 1
+    """yet to implement; energy loss due to homeostasis"""
+    """for simplicity reason we translate evolutionary fitness into energy"""
+    degradation_energy_predator = 0.1
+    """ yet to implement; energy destruction to degradation of (body/living-)structure; second law of thermodynamics"""
 
     initial_prey = 10
-    initial_predators = 5
+    homeostatic_energy_prey = 1  # yet to implement
 
     prey_reproduce = 0.04
     predator_reproduce = 0.05
 
-    prey_gain_from_food = 4
-    max_energy_grass = 20
-    min_energy_grass_regrowth = 5
-    """
-        max_energy_grass: the maximum energy level of grass
-        min_energy_grass_regrowth: when grass eaten below min_energy_grass_regrowth, grass regrowth will not occur
-    """
     grass_regrowth_rate = 1.0  # pd
+    max_energy_grass = 20
+    min_energy_grass_regrowth = 0
+    """
+        grass_regrowth_rate: growth due to photosynthesis, the 
+        max_energy_grass: the maximum energy level of grass
+        min_energy_grass_regrowth: when grass eaten below min_energy_grass_regrowth, grass regrowth will not occur and 
+        grass agent will be deleted. If min_energy_grass_regrowth = 0 then grass will not be deleted, but will always
+        regrow. 
+    """
 
-    verbose_0 = False  # agent count
+
+    verbose_0 = True  # agent count
     verbose_1 = True  # agent_id activation move and eat
-    verbose_2 = False  # agent death
+    verbose_2 = True  # agent death
     verbose_3 = True  # agent birth
     verbose_4 = False  # agent life span table
-    verbose_5 = False  # agent life span average
+    verbose_5 = True  # agent average life span
+    verbose_6 = False # table agent count and cumulative energy per type
 
     is_per_type_random_activated = False
     """
@@ -51,8 +62,8 @@ class PredatorPrey(mesa.Model):
 
     def __init__(
             self,
-            width=10,
-            height=10,
+            width=5,
+            height=5,
             initial_prey=10,
             initial_predators=5,
             prey_reproduce=0.04,
@@ -129,32 +140,33 @@ class PredatorPrey(mesa.Model):
 
     def step(self):
         self.schedule.step()
+
         # collect data
         self.datacollector.collect(self)
-        if self.verbose_0:
+        if self.verbose_6:
             print(self.datacollector.get_model_vars_dataframe())
         if self.verbose_4:
-            print("tables:  ")
+            print("tables:")
             # print(self.datacollector.get_table_dataframe("Lifespan_Prey")["life_span"])
             print(self.datacollector.get_table_dataframe("Lifespan_Predators"))
             print(self.datacollector.get_table_dataframe("Lifespan_Prey"))
-            print("model_reporters:")
-            print(self.datacollector.get_model_vars_dataframe())
 
         if self.verbose_5:
+            print("-----------------------------------------------------------")
             print("Average life time Prey: ", end="")
-            print(self.datacollector.get_table_dataframe("Lifespan_Prey")["life_span"].mean())
+            print(round(self.datacollector.get_table_dataframe("Lifespan_Prey")["life_span"].mean(),1))
         if self.verbose_5:
             print("Average life time Predators: ", end="")
+            print(round(self.datacollector.get_table_dataframe("Lifespan_Predators")["life_span"].mean(),1))
+            print("-----------------------------------------------------------")
 
-            print(self.datacollector.get_table_dataframe("Lifespan_Predators")["life_span"].mean())
-
-        if self.verbose_0:
+        if self.verbose_6:
             print([self.schedule.time,
                    self.schedule.get_type_count(Predator),
                    self.schedule.get_type_count(Prey),
                    self.schedule.get_type_count(GrassPatch, lambda x: x.fully_grown)])
 
+    """
     def run_model(self, step_count=200):
         if self.verbose_0:
             print("Initial number predators: ", self.schedule.get_type_count(Predator))
@@ -172,3 +184,4 @@ class PredatorPrey(mesa.Model):
             print("Final number grass: ",
                   self.schedule.get_type_count(GrassPatch, lambda x: x.fully_grown),
                   )
+    """

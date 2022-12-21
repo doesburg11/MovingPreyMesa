@@ -242,6 +242,7 @@ class DataCollector:
         Args:
             table_name: The name of the table to convert.
         """
+       # pd.set_option('max_columns', None)
         if table_name not in self.tables:
             raise Exception("No such table.")
         return pd.DataFrame(self.tables[table_name])

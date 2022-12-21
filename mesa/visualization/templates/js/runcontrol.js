@@ -131,22 +131,11 @@ stepModelButton.onclick = () => {
 
 /*pd*/
 stepAgentModelButton.onclick = () => {
-  /*if (!controller.running & !controller.finished) {
-    controller.step();*/
-
-  stepAgentModelButton.firstElementChild.innerText = "Stop";
-  }
-};
-
-
-
-
-/*pd
-stepAgentModelButton.onclick = () => {
   if (!controller.running & !controller.finished) {
     controller.step();
-  }
-};*/
+    }
+  //stepAgentModelButton.firstElementChild.innerText = "Test";
+};
 
 resetModelButton.onclick = () => controller.reset();
 

@@ -93,9 +93,14 @@
     <!-- <script src="/static/external/bootstrap-slider-11.0.2/dist/bootstrap-slider.min.js"></script> -->
 
     <!-- Script includes go here -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.6.1/chart.min.js" integrity="sha512-O2fWHvFel3xjQSi9FyzKXWLTvnom+lOYR/AUEThL/fbP4hv1Lo5LCFCGuTXBRyKC4K4DJldg5kxptkgXAzUpvA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
 	{% for file_name in package_js_includes %}
-		<script src="/static/js/{{ file_name }}" type="text/javascript"></script>
+		<script src="/static/js/{{ file_name }}" type="text/javascript">
+
+        </script>
 	{% end %}
+
 	{% for file_name in local_js_includes %}
 		<script src="/local/{{ file_name }}" type="text/javascript"></script>
 	{% end %}

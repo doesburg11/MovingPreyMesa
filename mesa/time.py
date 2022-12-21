@@ -32,7 +32,6 @@ from typing import Iterator, Union
 from mesa.agent import Agent
 from mesa.model import Model
 
-
 # BaseScheduler has a self.time of int, while
 # StagedActivation has a self.time of float
 TimeT = Union[float, int]
@@ -98,10 +97,13 @@ class BaseScheduler:
         # To be able to remove and/or add agents during stepping
         # it's necessary to cast the keys view to a list.
         agent_keys = list(self._agents.keys())
+        #print(agent_keys)
         if shuffled:
             self.model.random.shuffle(agent_keys)
+        #print(agent_keys)
 
         for agent_key in agent_keys:
+            #print(str(self._agents[agent_key].name)+"_"+str(self._agents[agent_key].unique_id))
             if agent_key in self._agents:
                 yield self._agents[agent_key]
 
@@ -119,7 +121,6 @@ class RandomActivation(BaseScheduler):
     def step(self) -> None:
         """Executes the step of all agents, one at a time, in
         random order.
-
         """
         for agent in self.agent_buffer(shuffled=True):
             agent.step()
@@ -164,11 +165,11 @@ class StagedActivation(BaseScheduler):
     """
 
     def __init__(
-        self,
-        model: Model,
-        stage_list: list[str] | None = None,
-        shuffle: bool = False,
-        shuffle_between_stages: bool = False,
+            self,
+            model: Model,
+            stage_list: list[str] | None = None,
+            shuffle: bool = False,
+            shuffle_between_stages: bool = False,
     ) -> None:
         """Create an empty Staged Activation schedule.
 
@@ -269,8 +270,8 @@ class RandomActivationByType(BaseScheduler):
             self.model.random.shuffle(type_keys)
         for agent_class in type_keys:
             self.step_type(agent_class, shuffle_agents=shuffle_agents)
-            #print("agent_type")
-            #print(agent_class)
+            print("agent_type")
+            print(agent_class)
         self.steps += 1
         self.time += 1
 

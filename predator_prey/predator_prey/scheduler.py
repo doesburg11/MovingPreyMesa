@@ -81,3 +81,6 @@ class RandomActivationByAllAgents(mesa.time.RandomActivation):
         for agent in self.agents_by_type[type_class].values():
             energy += agent.energy
         return energy
+
+
+
