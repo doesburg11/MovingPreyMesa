@@ -15,9 +15,9 @@ const startModelButton = document.getElementById("play-pause");
 const stepModelButton = document.getElementById("step");
 const resetModelButton = document.getElementById("reset");
 const stepDisplay = document.getElementById("currentStep");
-
+/*
 const stepAgentModelButton = document.getElementById("step-agent");
-
+*/
 
 /**
  * A ModelController that defines the model state.
@@ -52,10 +52,14 @@ function ModelController(tick = 0, fps = 3, running = false, finished = false) {
    *
    * If the model is in a running state this function will be called repeatedly
    * after the visualization elements are rendered. */
+  const max_model_steps = 100000;
   this.step = function step() {
     this.tick += 1;
     stepDisplay.innerText = this.tick;
     send({ type: "get_step", step: this.tick });
+    if (this.tick > max_model_steps) {   /* PVD */
+      this.running = false;
+    }
   };
 
   /** Reset the model and visualization state but keep its running state */
@@ -85,6 +89,7 @@ function ModelController(tick = 0, fps = 3, running = false, finished = false) {
    */
   this.render = function render(data) {
     vizElements.forEach((element, index) => element.render(data[index]));
+
     if (this.running) {
       this.timeout = setTimeout(() => this.step(), 1000 / this.fps);
     }
@@ -102,12 +107,13 @@ function ModelController(tick = 0, fps = 3, running = false, finished = false) {
 /*
  * Set up the the FPS control
  */
+const max_fps = 20 /*PVD*/
 const fpsControl = new Slider("#fps", {
-  max: 20,
+  max: max_fps,
   min: 0,
   value: controller.fps,
-  ticks: [0, 20],
-  ticks_labels: [0, 20],
+  ticks: [0, max_fps],
+  ticks_labels: [0, max_fps],
   ticks_position: [0, 100],
 });
 fpsControl.on("change", () => controller.updateFPS(fpsControl.getValue()));
@@ -129,13 +135,13 @@ stepModelButton.onclick = () => {
   }
 };
 
-/*pd*/
+/* PVD
 stepAgentModelButton.onclick = () => {
   if (!controller.running & !controller.finished) {
     controller.step();
     }
   //stepAgentModelButton.firstElementChild.innerText = "Test";
-};
+}; */
 
 resetModelButton.onclick = () => controller.reset();
 

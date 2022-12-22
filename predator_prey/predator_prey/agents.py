@@ -3,7 +3,6 @@ from predator_prey.random_walk import RandomWalker
 
 
 class Prey(RandomWalker):
-
     name = "prey"
 
     def __init__(self, unique_id, pos, model, moore, energy):
@@ -17,7 +16,8 @@ class Prey(RandomWalker):
         """
         if self.model.verbose_1:
             print("-----------------------------------------------------------")
-            print("prey_" + str(self.unique_id) + " moves [E:" + str(self.energy) + "]: " + str(self.pos) + "=>",
+            print("prey_" + str(self.unique_id) + " moves [E:" + str(round(self.energy, 1)) + "]: " + str(
+                self.pos) + "=>",
                   end="")
         self.random_move()
         # Reduce energy because of step
@@ -25,20 +25,21 @@ class Prey(RandomWalker):
         self.age += 1
         living = True
         if self.model.verbose_1:
-            print(str(self.pos) + " [E:" + str(self.energy) + "]")
+            print(str(self.pos) + " [E:" + str(round(self.energy, 1)) + "]")
 
         # If there is grass available in cell, eat it
         agents_list_in_cell = self.model.grid.get_cell_list_contents([self.pos])
         grass_patches_list_in_cell = [obj for obj in agents_list_in_cell if isinstance(obj, GrassPatch)]
-        if len(grass_patches_list_in_cell) > 0: # is_grass_patch_in_cell
+        if len(grass_patches_list_in_cell) > 0:  # is_grass_patch_in_cell
             # eat grass
             grass_patch_in_cell_to_eat = [obj for obj in agents_list_in_cell if isinstance(obj, GrassPatch)][0]
             new_energy_prey = self.energy + grass_patch_in_cell_to_eat.energy
             if self.model.verbose_1:
-                print("prey_" + str(self.unique_id) + " eats [E:" + str(self.energy) + "]=>[" + str(
-                    new_energy_prey) + "]")
+                print("prey_" + str(self.unique_id) + " eats [E:" + str(round(self.energy,1)) + "]=>[" + str(
+                    round(new_energy_prey,1)) + "]")
                 print("grass_" + str(grass_patch_in_cell_to_eat.unique_id) + " eaten " + str(
-                    grass_patch_in_cell_to_eat.pos) + " [E:" + str(grass_patch_in_cell_to_eat.energy) + "]=>", end="")
+                    grass_patch_in_cell_to_eat.pos) + " [E:" + str(round(grass_patch_in_cell_to_eat.energy,1)) + "]=>",
+                      end="")
             if grass_patch_in_cell_to_eat.energy < self.model.min_energy_grass_regrowth:
                 self.energy = new_energy_prey
                 self.model.grid.remove_agent(grass_patch_in_cell_to_eat)
@@ -50,7 +51,7 @@ class Prey(RandomWalker):
                 grass_patch_in_cell_to_eat.fully_grown = False
                 grass_patch_in_cell_to_eat.energy = 0
                 if self.model.verbose_1:
-                    print("[E:" + str(grass_patch_in_cell_to_eat.energy) + "]")
+                    print("[E:" + str(round(grass_patch_in_cell_to_eat.energy,1)) + "]")
 
         # Death or reproduction
         if self.energy < 0:
@@ -75,8 +76,8 @@ class Prey(RandomWalker):
                 created_id = self.model.next_id()
                 if self.model.verbose_3:
                     print("prey_" + str(self.unique_id) + " creates prey_" + str(created_id) +
-                          " [E:"+str(new_energy_child)+"] at age " + str(self.age) +
-                          " [E:"+str(self.energy)+"]=>[E:"+str(new_energy_mother)+"]")
+                          " [E:" + str(round(new_energy_child, 1)) + "] at age " + str(self.age) +
+                          " [E:" + str(round(self.energy, 1)) + "]=>[E:" + str(round(new_energy_mother, 1)) + "]")
                 self.energy = new_energy_mother
                 created_prey = Prey(
                     created_id, self.pos, self.model, self.moore, new_energy_child
@@ -86,9 +87,7 @@ class Prey(RandomWalker):
 
 
 class Predator(RandomWalker):
-
     name = "predator"
-
 
     def __init__(self, unique_id, pos, model, moore, energy):
         super().__init__(unique_id, pos, model, moore=moore)
@@ -98,13 +97,14 @@ class Predator(RandomWalker):
     def step(self):
         if self.model.verbose_1:
             print("-----------------------------------------------------------")
-            print("predator_" + str(self.unique_id) + " moves [E:" + str(self.energy) + "]: " + str(self.pos) + "=>",
+            print("predator_" + str(self.unique_id) + " moves [E:" + str(round(self.energy, 1)) + "]: " + str(
+                self.pos) + "=>",
                   end="")
         self.random_move()
         self.age += 1
         self.energy -= 1
         if self.model.verbose_1:
-            print(str(self.pos) + " [E:" + str(self.energy) + "]")
+            print(str(self.pos) + " [E:" + str(round(self.energy, 1)) + "]")
 
         # If there are prey present, eat one at random
         agents_list_in_cell = self.model.grid.get_cell_list_contents([self.pos])
@@ -114,10 +114,10 @@ class Predator(RandomWalker):
             prey_in_cell_to_eat = self.random.choice(prey_list_in_cell)
             new_energy_predator = self.energy + prey_in_cell_to_eat.energy
             if self.model.verbose_1:
-                print("predator_" + str(self.unique_id) + " eats [E:" + str(self.energy) + "]=>[" + str(
-                    new_energy_predator) + "]")
+                print("predator_" + str(self.unique_id) + " eats [E:" + str(round(self.energy, 1)) + "]=>[" + str(
+                    round(new_energy_predator, 1)) + "]")
                 print("prey_" + str(prey_in_cell_to_eat.unique_id) + " eaten " + str(
-                    prey_in_cell_to_eat.pos) + " [E:" + str(prey_in_cell_to_eat.energy) + "]=>", end="")
+                    prey_in_cell_to_eat.pos) + " [E:" + str(round(prey_in_cell_to_eat.energy, 1)) + "]=>", end="")
 
             # Kill the prey
             self.energy = new_energy_predator
@@ -157,8 +157,8 @@ class Predator(RandomWalker):
                 created_id = self.model.next_id()
                 if self.model.verbose_3:
                     print("predator_" + str(self.unique_id) + " creates predator_" + str(created_id) +
-                          " [E:"+str(new_energy_child)+"] at age " + str(self.age) +
-                          " [E:"+str(self.energy)+"]=>[E:"+str(new_energy_mother)+"]")
+                          " [E:" + str(round(new_energy_child, 1)) + "] at age " + str(self.age) +
+                          " [E:" + str(round(self.energy, 1)) + "]=>[E:" + str(round(new_energy_mother, 1)) + "]")
                 self.energy = new_energy_mother
                 created_predator = Predator(
                     created_id, self.pos, self.model, self.moore, new_energy_child
@@ -168,7 +168,6 @@ class Predator(RandomWalker):
 
 
 class GrassPatch(mesa.Agent):
-
     name = "grass"
 
     def __init__(self, unique_id, pos, model, fully_grown, energy):
@@ -183,7 +182,6 @@ class GrassPatch(mesa.Agent):
         self.pos = pos
         self.energy = energy
         self.regrowth_rate = self.model.grass_regrowth_rate
-
 
     def step(self):
         # print("grass_" + str(self.unique_id))

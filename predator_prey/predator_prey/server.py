@@ -5,6 +5,13 @@ from predator_prey.model import PredatorPrey
 
 
 def predator_prey_portrayal(agent):
+
+    def agent_id(_agent):
+        if _agent.model.n_grid_cells_width * _agent.model.n_grid_cells_height > 100:
+            return ""
+        else:
+            return agent.unique_id
+
     if agent is None:
         return
 
@@ -17,7 +24,8 @@ def predator_prey_portrayal(agent):
         portrayal["Filled"] = "true"
         portrayal["Color"] = ["#FF0000", "#FF9999"]
         portrayal["stroke_color"] = "#00FF00"
-        portrayal["text"] = agent.unique_id
+        portrayal["text"] = agent_id(agent)
+            #agent.unique_id if PredatorPrey.h*PredatorPrey.n_grid_cells_width<100 else ""
         portrayal["text_color"] = "black"
 
         # tooltip content Predator
@@ -35,7 +43,7 @@ def predator_prey_portrayal(agent):
         portrayal["Filled"] = "true"
         portrayal["Color"] = ["#0000FF", "#9999FF"]
         portrayal["stroke_color"] = "#000000"
-        portrayal["text"] = agent.unique_id
+        portrayal["text"] = agent_id(agent)
         portrayal["text_color"] = "black"
 
         # tooltip content Prey
@@ -56,12 +64,13 @@ def predator_prey_portrayal(agent):
         portrayal["w"] = 1
         portrayal["h"] = 1
 
-        # tooltip content Prey
+        # tooltip content GrassPatch
         portrayal["type"] = "Grass"
         portrayal["id"] = agent.unique_id
         portrayal["energy"] = round(agent.energy, 2)
         portrayal["regrowth rate"] = round(agent.regrowth_rate, 2)
         portrayal["Layer"] = 1
+        portrayal["position"] = agent.pos
 
     return portrayal
 

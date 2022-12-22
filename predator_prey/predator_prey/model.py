@@ -16,27 +16,26 @@ from predator_prey.agents import Prey, Predator, GrassPatch
 
 class PredatorPrey(mesa.Model):
 
-    n_grid_cells_height = 15
-    n_grid_cells_width = 25
+    n_grid_cells_height = 5
+    n_grid_cells_width = 5
     canvas_width = 500
     canvas_height = canvas_width*(n_grid_cells_height/n_grid_cells_width)
 
-
     initial_predators = 3
-    homeostatic_energy_predator = 1
+    homeostatic_energy_predator = 1.0
     """yet to implement; energy loss due to homeostasis"""
     """for simplicity reason we translate evolutionary fitness into energy"""
     degradation_energy_predator = 0.1
     """ yet to implement; energy destruction to degradation of (body/living-)structure; second law of thermodynamics"""
 
     initial_prey = 5
-    homeostatic_energy_prey = 1  # yet to implement
+    homeostatic_energy_prey = 1.0  # yet to implement
 
     prey_reproduce = 0.04
     predator_reproduce = 0.05
 
     grass_regrowth_rate = 1.0  # pd
-    max_energy_grass = 20
+    max_energy_grass = 20.0
     min_energy_grass_regrowth = 0
     """
         grass_regrowth_rate: growth due to photosynthesis, the 
@@ -169,22 +168,3 @@ class PredatorPrey(mesa.Model):
                    self.schedule.get_type_count(Prey),
                    self.schedule.get_type_count(GrassPatch, lambda x: x.fully_grown)])
 
-    """
-    def run_model(self, step_count=200):
-        if self.verbose_0:
-            print("Initial number predators: ", self.schedule.get_type_count(Predator))
-            print("Initial number prey: ", self.schedule.get_type_count(Prey))
-            print("Initial number grass: ",
-                  self.schedule.get_type_count(GrassPatch, lambda x: x.fully_grown))
-
-        for i in range(step_count):
-            self.step()
-
-        if self.verbose_0:
-            print("")
-            print("Final number predators: ", self.schedule.get_type_count(Predator))
-            print("Final number prey: ", self.schedule.get_type_count(Prey))
-            print("Final number grass: ",
-                  self.schedule.get_type_count(GrassPatch, lambda x: x.fully_grown),
-                  )
-    """
