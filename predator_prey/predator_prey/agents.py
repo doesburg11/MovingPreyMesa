@@ -32,7 +32,12 @@ class Prey(RandomWalker):
         if len(grass_patches_list_in_cell) > 0:  # is_grass_patch_in_cell
             # eat grass
             grass_patch_in_cell_to_eat = [obj for obj in agents_list_in_cell if isinstance(obj, GrassPatch)][0]
-            new_energy_prey = self.energy + grass_patch_in_cell_to_eat.energy
+
+            if self.energy < self.model.max_energy_prey - grass_patch_in_cell_to_eat.energy:
+                new_energy_prey = self.energy + grass_patch_in_cell_to_eat.energy
+            else:
+                new_energy_prey = self.model.max_energy_prey
+
             if self.model.verbose_1:
                 print("prey_" + str(self.unique_id) + " eats [E:" + str(round(self.energy,1)) + "]=>[" + str(
                     round(new_energy_prey,1)) + "]")
@@ -111,7 +116,12 @@ class Predator(RandomWalker):
         if len(prey_list_in_cell) > 0:  # if is_prey_list_in_cell
             # eat random prey
             prey_in_cell_to_eat = self.random.choice(prey_list_in_cell)
-            new_energy_predator = self.energy + prey_in_cell_to_eat.energy
+
+            if self.energy < self.model.max_energy_predators - prey_in_cell_to_eat.energy:
+                new_energy_predator = self.energy + prey_in_cell_to_eat.energy
+            else:
+                new_energy_predator = self.model.max_energy_predators
+
             if self.model.verbose_1:
                 print("predator_" + str(self.unique_id) + " eats [E:" + str(round(self.energy, 1)) + "]=>[" + str(
                     round(new_energy_predator, 1)) + "]")

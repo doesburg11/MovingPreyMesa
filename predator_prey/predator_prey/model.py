@@ -15,34 +15,32 @@ from predator_prey.agents import Prey, Predator, GrassPatch
 
 
 class PredatorPrey(mesa.Model):
-
     n_grid_cells_height = 15
     n_grid_cells_width = 30
     canvas_width = 500
-    canvas_height = canvas_width*(n_grid_cells_height/n_grid_cells_width)
-
+    canvas_height = canvas_width * (n_grid_cells_height / n_grid_cells_width)
+    # Predators
     initial_predators = 3
-    initial_energy_predators = 40.0
+    initial_energy_predators = 20.0
+    max_energy_predators = 50
     homeostatic_energy_predator = 1.0
     """yet to implement; energy loss due to homeostasis"""
     """for simplicity reason we translate evolutionary fitness into energy"""
-    degradation_energy_predator = 0.1
-    """ yet to implement; energy destruction to degradation of (body/living-)structure; second law of thermodynamics"""
-
-    initial_prey = 5
-    homeostatic_energy_prey = 1.0  # yet to implement
-    initial_energy_prey = 25.0
-
-    prey_reproduce = 0.04
     predator_reproduce = 0.05
 
-    grass_regrowth_rate = 1.0  # pd
-    max_energy_grass = 20.0
+    # Prey
+    initial_prey = 5
+    initial_energy_prey = 15.0
+    max_energy_prey = 30.0
+    homeostatic_energy_prey = 1.0
+    prey_reproduce = 0.055
+
+    # GrassPatch
+    grass_regrowth_rate = 0.5
+    max_energy_grass = 10.0
     min_energy_grass_regrowth = 0
-
-
     """
-        grass_regrowth_rate: growth due to photosynthesis, the 
+        grass_regrowth_rate: growth due to photosynthesis
         max_energy_grass: the maximum energy level of grass
         min_energy_grass_regrowth: when grass eaten below min_energy_grass_regrowth, grass regrowth will not occur and 
         grass agent will be deleted. If min_energy_grass_regrowth = 0 then grass will not be deleted, but will always
@@ -77,6 +75,8 @@ class PredatorPrey(mesa.Model):
             grass_regrowth_rate=1.0,
             initial_energy_predators=initial_energy_predators,
             initial_energy_prey=initial_energy_prey,
+            max_energy_predators=max_energy_predators,
+            max_energy_prey=max_energy_prey,
 
     ):
         """
@@ -93,6 +93,7 @@ class PredatorPrey(mesa.Model):
         # Set parameters
         self.n_grid_cells_width = n_grid_cells_width
         self.n_grid_cells_height = n_grid_cells_height
+
         self.initial_prey = initial_prey
         self.initial_predators = initial_predators
         self.prey_reproduce = prey_reproduce
@@ -101,6 +102,8 @@ class PredatorPrey(mesa.Model):
 
         self.initial_energy_predators = initial_energy_predators
         self.initial_energy_prey = initial_energy_prey
+        self.max_energy_predators = max_energy_predators
+        self.max_energy_prey = max_energy_prey
         self.schedule = RandomActivationByTypeFiltered(self) if self.is_per_type_random_activated else \
             RandomActivationByAllAgents(self)
         self.grid = mesa.space.MultiGrid(self.n_grid_cells_width, self.n_grid_cells_height, torus=True)
@@ -174,4 +177,3 @@ class PredatorPrey(mesa.Model):
                    self.schedule.get_type_count(Predator),
                    self.schedule.get_type_count(Prey),
                    self.schedule.get_type_count(GrassPatch, lambda x: x.fully_grown)])
-

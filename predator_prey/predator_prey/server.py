@@ -109,21 +109,21 @@ model_params = {
         20
     ),
     "initial_prey": mesa.visualization.Slider(
-        "Initial prey Population",
+        "Initial Prey Population",
         PredatorPrey.initial_prey,
         0,
         20
     ),
 
     "prey_reproduce": mesa.visualization.Slider(
-        "prey Reproduction Rate",
+        "Prey Reproduction Rate",
         0.04,
         0.0,
         0.1,
         0.005
     ),
     "predator_reproduce": mesa.visualization.Slider(
-        "predator Reproduction Rate",
+        "Predator Reproduction Rate",
         0.05,
         0.0,
         0.1,
@@ -132,14 +132,14 @@ model_params = {
     ),
     "grass_regrowth_rate": mesa.visualization.Slider(
         "Grass Regrowth Rate",
-        0.5,
+        PredatorPrey.grass_regrowth_rate,
         0.0,
         2.5,
         0.1,
         description="Energy increase of a GrassPatch per step due to regrowth"
     ),
     "initial_energy_predators": mesa.visualization.Slider(
-        "initial_energy_predators",
+        "Energy Predators at Start",
         PredatorPrey.initial_energy_predators,
         0.0,
         50.0,
@@ -147,12 +147,26 @@ model_params = {
         description="Energy a predator inherits by initialization of model"
     ),
     "initial_energy_prey": mesa.visualization.Slider(
-        "initial_energy_prey",
-        PredatorPrey.initial_energy_predators,
+        "Energy Prey at Start",
+        PredatorPrey.initial_energy_prey,
         0.0,
         50.0,
         0.1,
         description="Energy a prey inherits by initialization of model"
+    ),
+    "max_energy_predators": mesa.visualization.Slider(
+        "Maximum Energy Predator",
+        PredatorPrey.max_energy_predators,
+        0.0,
+        80.0,
+        0.1,
+    ),
+    "max_energy_prey": mesa.visualization.Slider(
+        "Maximum Energy Prey",
+        PredatorPrey.max_energy_prey,
+        0.0,
+        50.0,
+        0.1,
     ),
 
 }
