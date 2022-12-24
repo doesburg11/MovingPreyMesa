@@ -1,7 +1,12 @@
-.model-parameter {
-   margin-bottom: 15px;
+:root {
+   --bs-dark-rgb: 12,60,96;
+   --bs-primary-rgb: 255,0,0;
 }
-
+slider-selection.tick-slider-selection {
+    background-color: red;
+    background-image: red;
+    color: red;
+}
 /* This is specific to the Network visualization */
 
 div.d3tooltip {

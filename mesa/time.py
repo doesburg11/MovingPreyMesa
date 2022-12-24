@@ -278,7 +278,6 @@ class RandomActivationByType(BaseScheduler):
     def step_type(self, type_class: type[Agent], shuffle_agents: bool = True) -> None:
         """
         Shuffle order and run all agents of a given type.
-        This method is equivalent to the NetLogo 'ask [breed]...'.
 
         Args:
             type_class: Class object of the type to run.

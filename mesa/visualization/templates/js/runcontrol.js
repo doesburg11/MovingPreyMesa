@@ -15,6 +15,8 @@ const startModelButton = document.getElementById("play-pause");
 const stepModelButton = document.getElementById("step");
 const resetModelButton = document.getElementById("reset");
 const stepDisplay = document.getElementById("currentStep");
+//const nPredators = document.getElementById("n-predators"); //PVD
+
 /*
 const stepAgentModelButton = document.getElementById("step-agent");
 */
@@ -56,6 +58,7 @@ function ModelController(tick = 0, fps = 3, running = false, finished = false) {
   this.step = function step() {
     this.tick += 1;
     stepDisplay.innerText = this.tick;
+    //nPredators.innerText = this.tick+10;  //PVD
     send({ type: "get_step", step: this.tick });
     if (this.tick > max_model_steps) {   /* PVD */
       this.running = false;

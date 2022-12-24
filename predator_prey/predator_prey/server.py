@@ -24,8 +24,7 @@ def predator_prey_portrayal(agent):
         portrayal["Filled"] = "true"
         portrayal["Color"] = ["#FF0000", "#FF9999"]
         portrayal["stroke_color"] = "#00FF00"
-        portrayal["text"] = agent_id(agent)
-            #agent.unique_id if PredatorPrey.h*PredatorPrey.n_grid_cells_width<100 else ""
+        portrayal["text"] = agent.unique_id if PredatorPrey.n_grid_cells_height*PredatorPrey.n_grid_cells_width<100 else ""
         portrayal["text_color"] = "black"
 
         # tooltip content Predator
@@ -43,7 +42,7 @@ def predator_prey_portrayal(agent):
         portrayal["Filled"] = "true"
         portrayal["Color"] = ["#0000FF", "#9999FF"]
         portrayal["stroke_color"] = "#000000"
-        portrayal["text"] = agent_id(agent)
+        portrayal["text"] = agent.unique_id if PredatorPrey.n_grid_cells_height*PredatorPrey.n_grid_cells_width<100 else ""
         portrayal["text_color"] = "black"
 
         # tooltip content Prey
@@ -67,10 +66,10 @@ def predator_prey_portrayal(agent):
         # tooltip content GrassPatch
         portrayal["type"] = "Grass"
         portrayal["id"] = agent.unique_id
-        portrayal["energy"] = round(agent.energy, 2)
         portrayal["regrowth rate"] = round(agent.regrowth_rate, 2)
+        portrayal["energy"] = round(agent.energy, 2)
+        portrayal["pos"] = str(agent.pos)
         portrayal["Layer"] = 1
-        portrayal["position"] = agent.pos
 
     return portrayal
 
@@ -85,7 +84,7 @@ canvas_element = mesa.visualization.CanvasGrid(
 chart_element = mesa.visualization.ChartModule(
     [
         {"Label": "Predators", "Color": "#AA0000"},
-        {"Label": "Prey", "Color": "#666666"},
+        {"Label": "Prey", "Color": "#0000FF"},
         {"Label": "GrassPatches", "Color": "#00AA00"},
     ]
 )
@@ -107,38 +106,55 @@ model_params = {
         "Initial predator Population",
         PredatorPrey.initial_predators,
         0,
-        300
+        20
     ),
     "initial_prey": mesa.visualization.Slider(
         "Initial prey Population",
         PredatorPrey.initial_prey,
         0,
-        300
+        20
     ),
 
     "prey_reproduce": mesa.visualization.Slider(
         "prey Reproduction Rate",
         0.04,
-        0.01,
-        1.0,
-        0.01
+        0.0,
+        0.1,
+        0.005
     ),
     "predator_reproduce": mesa.visualization.Slider(
         "predator Reproduction Rate",
         0.05,
-        0.01,
-        1.0,
-        0.01,
+        0.0,
+        0.1,
+        0.005,
         description="The rate at which predator agents reproduce.",
     ),
     "grass_regrowth_rate": mesa.visualization.Slider(
         "Grass Regrowth Rate",
-        1.0,
-        0.1,
-        5.0,
+        0.5,
+        0.0,
+        2.5,
         0.1,
         description="Energy increase of a GrassPatch per step due to regrowth"
     ),
+    "initial_energy_predators": mesa.visualization.Slider(
+        "initial_energy_predators",
+        PredatorPrey.initial_energy_predators,
+        0.0,
+        50.0,
+        0.1,
+        description="Energy a predator inherits by initialization of model"
+    ),
+    "initial_energy_prey": mesa.visualization.Slider(
+        "initial_energy_prey",
+        PredatorPrey.initial_energy_predators,
+        0.0,
+        50.0,
+        0.1,
+        description="Energy a prey inherits by initialization of model"
+    ),
+
 }
 
 server = mesa.visualization.ModularServer(

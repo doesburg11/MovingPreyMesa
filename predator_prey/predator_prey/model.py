@@ -16,12 +16,13 @@ from predator_prey.agents import Prey, Predator, GrassPatch
 
 class PredatorPrey(mesa.Model):
 
-    n_grid_cells_height = 5
-    n_grid_cells_width = 5
+    n_grid_cells_height = 15
+    n_grid_cells_width = 30
     canvas_width = 500
     canvas_height = canvas_width*(n_grid_cells_height/n_grid_cells_width)
 
     initial_predators = 3
+    initial_energy_predators = 40.0
     homeostatic_energy_predator = 1.0
     """yet to implement; energy loss due to homeostasis"""
     """for simplicity reason we translate evolutionary fitness into energy"""
@@ -30,6 +31,7 @@ class PredatorPrey(mesa.Model):
 
     initial_prey = 5
     homeostatic_energy_prey = 1.0  # yet to implement
+    initial_energy_prey = 25.0
 
     prey_reproduce = 0.04
     predator_reproduce = 0.05
@@ -37,6 +39,8 @@ class PredatorPrey(mesa.Model):
     grass_regrowth_rate = 1.0  # pd
     max_energy_grass = 20.0
     min_energy_grass_regrowth = 0
+
+
     """
         grass_regrowth_rate: growth due to photosynthesis, the 
         max_energy_grass: the maximum energy level of grass
@@ -71,6 +75,9 @@ class PredatorPrey(mesa.Model):
             prey_reproduce=0.04,
             predator_reproduce=0.05,
             grass_regrowth_rate=1.0,
+            initial_energy_predators=initial_energy_predators,
+            initial_energy_prey=initial_energy_prey,
+
     ):
         """
         Create a new Predator-Prey model with the given parameters.
@@ -92,8 +99,8 @@ class PredatorPrey(mesa.Model):
         self.predator_reproduce = predator_reproduce
         self.grass_regrowth_rate = grass_regrowth_rate
 
-        self.initial_energy_predators = 40.0
-        self.initial_energy_prey = 25.0
+        self.initial_energy_predators = initial_energy_predators
+        self.initial_energy_prey = initial_energy_prey
         self.schedule = RandomActivationByTypeFiltered(self) if self.is_per_type_random_activated else \
             RandomActivationByAllAgents(self)
         self.grid = mesa.space.MultiGrid(self.n_grid_cells_width, self.n_grid_cells_height, torus=True)

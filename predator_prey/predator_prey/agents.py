@@ -23,7 +23,6 @@ class Prey(RandomWalker):
         # Reduce energy because of step
         self.energy -= 1
         self.age += 1
-        living = True
         if self.model.verbose_1:
             print(str(self.pos) + " [E:" + str(round(self.energy, 1)) + "]")
 
