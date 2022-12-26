@@ -44,12 +44,3 @@ kill -9 $(ps -A | grep python | awk '{print $1}')
 ```bash
 mesa runserver predator_prey
 ```
-
-The scheduler first outputs all Predators reshuffled and then all Prey reshuffled.
-Not all agents reshuffled together that is.
- This is probably initiated by:
-/home/doesburg/DataspellProjects/mesa_pd/mesa/time.py
-and step_type() and step()
-
-To do:
-Top bar color: #0C3C60
