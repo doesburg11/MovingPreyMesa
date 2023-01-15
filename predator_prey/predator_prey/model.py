@@ -15,8 +15,8 @@ from predator_prey.agents import Prey, Predator, GrassPatch
 
 
 class PredatorPrey(mesa.Model):
-    n_grid_cells_height = 15
-    n_grid_cells_width = 30
+    n_grid_cells_height = 5
+    n_grid_cells_width = 5
     canvas_width = 500
     canvas_height = canvas_width * (n_grid_cells_height / n_grid_cells_width)
     # Predators
@@ -177,3 +177,17 @@ class PredatorPrey(mesa.Model):
                    self.schedule.get_type_count(Predator),
                    self.schedule.get_type_count(Prey),
                    self.schedule.get_type_count(GrassPatch, lambda x: x.fully_grown)])
+        df_predators = self.datacollector.get_model_vars_dataframe()["Predators"]
+        df_prey = self.datacollector.get_model_vars_dataframe()["Prey"]
+        if df_predators.iloc[-1] == 0 and df_predators.iloc[-1] == 0:
+            # https://stackoverflow.com/questions/34166030/obtaining-last-value-of-dataframe-column-without-index
+            self.running = False
+            # stops simulation when both agents are dead
+            # todo: make batches to record the average length of the simulation with parameter changes
+        """
+        print(self.datacollector.get_model_vars_dataframe())
+        print(self.datacollector.get_model_vars_dataframe()["Predators"])
+        print(self.datacollector.get_model_vars_dataframe()["Prey"])
+        print(df_predators.iloc[-1])
+        print(df_prey.iloc[-1])
+        """
