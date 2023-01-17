@@ -174,7 +174,7 @@ model_params = {
 server = mesa.visualization.ModularServer(
     PredatorPrey,
     [canvas_element, chart_element, chart_element1],
-    "Predator Prey Model",
+    "Moving Prey Model",
     model_params
 )
 server.port = 8521
