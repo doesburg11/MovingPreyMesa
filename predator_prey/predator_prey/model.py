@@ -1,9 +1,5 @@
 """
-Predator-Prey Model
-
-Adjustment of:
-1.    Wilensky, U. (1997). NetLogo Predator Prey model
-2.    Olsen(2015)
+Predator-Moving-Prey Model
 
 """
 
@@ -40,7 +36,6 @@ class PredatorPrey(mesa.Model):
     verbose_2 = True  # agent death
     verbose_3 = True  # agent birth
     verbose_4 = False  # agent life span table
-    verbose_5 = True  # agent average life span
     verbose_6 = False  # table agent count and cumulative energy per type
 
     is_per_type_random_activated = False
@@ -56,8 +51,8 @@ class PredatorPrey(mesa.Model):
             self,
             n_grid_cells_width=n_grid_cells_width,
             n_grid_cells_height=n_grid_cells_height,
-            initial_prey=1,
-            initial_predators=1,
+            initial_prey=initial_prey,
+            initial_predators=initial_predators,
             prey_reproduce=prey_reproduce,
             predator_reproduce=predator_reproduce,
             initial_energy_predators=initial_energy_predators,
@@ -99,10 +94,6 @@ class PredatorPrey(mesa.Model):
                 "Predators_energy": lambda m: m.schedule.get_energy_count(Predator),
                 "Prey_energy": lambda m: m.schedule.get_energy_count(Prey),
             },
-            tables={
-                "Lifespan_Predators": ["predator_id", "life_span"],
-                "Lifespan_Prey": ["prey_id", "life_span", "killed"],
-            },
         )
 
         # Create predators
@@ -138,15 +129,6 @@ class PredatorPrey(mesa.Model):
             # print(self.datacollector.get_table_dataframe("Lifespan_Prey")["life_span"])
             print(self.datacollector.get_table_dataframe("Lifespan_Predators"))
             print(self.datacollector.get_table_dataframe("Lifespan_Prey"))
-
-        if self.verbose_5:
-            print("-----------------------------------------------------------")
-            print("Average life time Prey: ", end="")
-            print(round(self.datacollector.get_table_dataframe("Lifespan_Prey")["life_span"].mean(), 1))
-        if self.verbose_5:
-            print("Average life time Predators: ", end="")
-            print(round(self.datacollector.get_table_dataframe("Lifespan_Predators")["life_span"].mean(), 1))
-            print("-----------------------------------------------------------")
 
         if self.verbose_6:
             print([self.schedule.time,

@@ -36,13 +36,6 @@ class Prey(RandomWalker):
             living = False
             if self.model.verbose_2:
                 print("*   prey_" + str(self.unique_id) + " dies at age " + str(self.age) + " of starvation")
-            self.model.datacollector.add_table_row(
-                "Lifespan_Prey", {
-                    "prey_id": self.unique_id,
-                    "life_span": self.age,
-                    "killed": False,
-                }
-            )
         else:
             # creation lottery
             if self.random.random() < self.model.prey_reproduce:
@@ -109,13 +102,6 @@ class Predator(RandomWalker):
             if self.model.verbose_2:
                 print("prey_" + str(prey_in_cell_to_eat.unique_id) + " dies at age " + str(prey_in_cell_to_eat.age) +
                       " of being eaten by predator_" + str(self.unique_id))
-            self.model.datacollector.add_table_row(
-                "Lifespan_Prey", {
-                    "prey_id": prey_in_cell_to_eat.unique_id,
-                    "life_span": prey_in_cell_to_eat.age,
-                    "killed": True,
-                }
-            )
 
         # Death or reproduction
         if self.energy < 0:
@@ -123,12 +109,6 @@ class Predator(RandomWalker):
             self.model.schedule.remove(self)
             if self.model.verbose_2:
                 print("*   predator_" + str(self.unique_id) + " dies at age " + str(self.age) + " of starvation")
-            self.model.datacollector.add_table_row(
-                "Lifespan_Predators", {
-                    "predator_id": self.unique_id,
-                    "life_span": self.age,
-                }
-            )
         else:
             # creation lottery
             if self.random.random() < self.model.predator_reproduce:
