@@ -1,6 +1,6 @@
 import mesa
 
-from predator_prey.agents import Predator, Prey, GrassPatch
+from predator_prey.agents import Predator, Prey
 from predator_prey.model import PredatorPrey
 
 
@@ -97,14 +97,14 @@ model_params = {
 
     "prey_reproduce": mesa.visualization.Slider(
         "Prey Reproduction Rate",
-        0.04,
+        PredatorPrey.prey_reproduce,
         0.0,
         0.1,
         0.005
     ),
     "predator_reproduce": mesa.visualization.Slider(
         "Predator Reproduction Rate",
-        0.05,
+        PredatorPrey.predator_reproduce,
         0.0,
         0.1,
         0.005,

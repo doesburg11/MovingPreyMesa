@@ -20,32 +20,20 @@ class PredatorPrey(mesa.Model):
     canvas_width = 500
     canvas_height = canvas_width * (n_grid_cells_height / n_grid_cells_width)
     # Predators
-    initial_predators = 3
+    initial_predators = 1
     initial_energy_predators = 20.0
     max_energy_predators = 50
     homeostatic_energy_predator = 1.0
-    """yet to implement; energy loss due to homeostasis"""
+    """TODO implement; energy loss due to homeostasis"""
     """for simplicity reason we translate evolutionary fitness into energy"""
-    predator_reproduce = 0.05
+    predator_reproduce = 0.0
 
     # Prey
-    initial_prey = 5
+    initial_prey = 1
     initial_energy_prey = 15.0
     max_energy_prey = 30.0
     homeostatic_energy_prey = 1.0
-    prey_reproduce = 0.055
-
-    # GrassPatch
-    grass_regrowth_rate = 0.5
-    max_energy_grass = 10.0
-    min_energy_grass_regrowth = 0
-    """
-        grass_regrowth_rate: growth due to photosynthesis
-        max_energy_grass: the maximum energy level of grass
-        min_energy_grass_regrowth: when grass eaten below min_energy_grass_regrowth, grass regrowth will not occur and 
-        grass agent will be deleted. If min_energy_grass_regrowth = 0 then grass will not be deleted, but will always
-        regrow. 
-    """
+    prey_reproduce = 0.0
 
     verbose_0 = True  # agent count
     verbose_1 = True  # agent_id activation move and eat
@@ -61,18 +49,17 @@ class PredatorPrey(mesa.Model):
     if True agents are random per agent type and random per class
     """
     description = (
-        "A model for simulating Predator-Prey  modelling."
+        "A model for simulating Predator-Prey behavior."
     )
 
     def __init__(
             self,
             n_grid_cells_width=n_grid_cells_width,
             n_grid_cells_height=n_grid_cells_height,
-            initial_prey=10,
-            initial_predators=5,
-            prey_reproduce=0.04,
-            predator_reproduce=0.05,
-            grass_regrowth_rate=1.0,
+            initial_prey=1,
+            initial_predators=1,
+            prey_reproduce=prey_reproduce,
+            predator_reproduce=predator_reproduce,
             initial_energy_predators=initial_energy_predators,
             initial_energy_prey=initial_energy_prey,
             max_energy_predators=max_energy_predators,
@@ -87,7 +74,6 @@ class PredatorPrey(mesa.Model):
             initial_predators: Number of predators to start with
             prey_reproduce: Probability of each prey reproducing each step
             predator_reproduce: Probability of each predator reproducing each step
-            grass_regrowth_rate: Increase in energy per model step due to regrowth GrassPatch
         """
         super().__init__()
         # Set parameters
@@ -98,7 +84,6 @@ class PredatorPrey(mesa.Model):
         self.initial_predators = initial_predators
         self.prey_reproduce = prey_reproduce
         self.predator_reproduce = predator_reproduce
-        self.grass_regrowth_rate = grass_regrowth_rate
 
         self.initial_energy_predators = initial_energy_predators
         self.initial_energy_prey = initial_energy_prey

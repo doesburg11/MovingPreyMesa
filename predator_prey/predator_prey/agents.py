@@ -28,34 +28,6 @@ class Prey(RandomWalker):
 
         # If there is grass available in cell, eat it
         agents_list_in_cell = self.model.grid.get_cell_list_contents([self.pos])
-        grass_patches_list_in_cell = [obj for obj in agents_list_in_cell if isinstance(obj, GrassPatch)]
-        if len(grass_patches_list_in_cell) > 0:  # is_grass_patch_in_cell
-            # eat grass
-            grass_patch_in_cell_to_eat = [obj for obj in agents_list_in_cell if isinstance(obj, GrassPatch)][0]
-
-            if self.energy < self.model.max_energy_prey - grass_patch_in_cell_to_eat.energy:
-                new_energy_prey = self.energy + grass_patch_in_cell_to_eat.energy
-            else:
-                new_energy_prey = self.model.max_energy_prey
-
-            if self.model.verbose_1:
-                print("prey_" + str(self.unique_id) + " eats [E:" + str(round(self.energy,1)) + "]=>[" + str(
-                    round(new_energy_prey,1)) + "]")
-                print("grass_" + str(grass_patch_in_cell_to_eat.unique_id) + " eaten " + str(
-                    grass_patch_in_cell_to_eat.pos) + " [E:" + str(round(grass_patch_in_cell_to_eat.energy,1)) + "]=>",
-                      end="")
-            if grass_patch_in_cell_to_eat.energy < self.model.min_energy_grass_regrowth:
-                self.energy = new_energy_prey
-                self.model.grid.remove_agent(grass_patch_in_cell_to_eat)
-                self.model.schedule.remove(grass_patch_in_cell_to_eat)
-                if self.model.verbose_1:
-                    print("killed and removed")
-            else:
-                self.energy = new_energy_prey
-                grass_patch_in_cell_to_eat.fully_grown = False
-                grass_patch_in_cell_to_eat.energy = 0
-                if self.model.verbose_1:
-                    print("[E:" + str(round(grass_patch_in_cell_to_eat.energy,1)) + "]")
 
         # Death or reproduction
         if self.energy < 0:
@@ -174,28 +146,3 @@ class Predator(RandomWalker):
                 )
                 self.model.grid.place_agent(created_predator, self.pos)
                 self.model.schedule.add(created_predator)
-
-
-class GrassPatch(mesa.Agent):
-    name = "grass"
-
-    def __init__(self, unique_id, pos, model, fully_grown, energy):
-        """
-        Creates a new patch of grass
-
-        Args:
-            fully_grown: (boolean) Whether the patch of grass is fully grown or not
-        """
-        super().__init__(unique_id, model)
-        self.fully_grown = fully_grown
-        self.pos = pos
-        self.energy = energy
-        self.regrowth_rate = self.model.grass_regrowth_rate
-
-    def step(self):
-        # print("grass_" + str(self.unique_id))
-        if self.energy < self.model.max_energy_grass - self.model.grass_regrowth_rate:
-            self.energy += self.model.grass_regrowth_rate  # grass_regrowth_rate = 1
-        else:
-            self.energy = self.model.max_energy_grass
-            self.fully_grown = True
