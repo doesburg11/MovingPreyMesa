@@ -11,7 +11,7 @@ import mesa
 
 from predator_prey.scheduler import RandomActivationByTypeFiltered, RandomActivationByAllAgents
 
-from predator_prey.agents import Prey, Predator, GrassPatch
+from predator_prey.agents import Prey, Predator
 
 
 class PredatorPrey(mesa.Model):
@@ -111,23 +111,14 @@ class PredatorPrey(mesa.Model):
             model_reporters={
                 "Predators": lambda m: m.schedule.get_type_count(Predator),
                 "Prey": lambda m: m.schedule.get_type_count(Prey),
-                "GrassPatches": lambda m: m.schedule.get_type_count(GrassPatch, lambda g: g.fully_grown),
                 "Predators_energy": lambda m: m.schedule.get_energy_count(Predator),
                 "Prey_energy": lambda m: m.schedule.get_energy_count(Prey),
-                "GrassPatch_energy": lambda m: m.schedule.get_energy_count(GrassPatch),
             },
             tables={
                 "Lifespan_Predators": ["predator_id", "life_span"],
                 "Lifespan_Prey": ["prey_id", "life_span", "killed"],
             },
         )
-
-        # Create grass patches
-        for agent, x, y in self.grid.coord_iter():
-            fully_grown = True
-            grass_patch = GrassPatch(self.next_id(), (x, y), self, fully_grown, self.max_energy_grass)
-            self.grid.place_agent(grass_patch, (x, y))
-            self.schedule.add(grass_patch)
 
         # Create predators
         for i in range(self.initial_predators):

@@ -53,24 +53,6 @@ def predator_prey_portrayal(agent):
         portrayal["pos"] = str(agent.pos)
         portrayal["Layer"] = 1
 
-    elif type(agent) is GrassPatch:
-        if agent.fully_grown:
-            portrayal["Color"] = ["#00FF00", "#00CC00", "#009900"]
-        else:
-            portrayal["Color"] = ["#84e184", "#adebad", "#d6f5d6"]
-        portrayal["Shape"] = "rect"
-        portrayal["Filled"] = "true"
-        portrayal["w"] = 1
-        portrayal["h"] = 1
-
-        # tooltip content GrassPatch
-        portrayal["type"] = "Grass"
-        portrayal["id"] = agent.unique_id
-        portrayal["regrowth rate"] = round(agent.regrowth_rate, 2)
-        portrayal["energy"] = round(agent.energy, 2)
-        portrayal["pos"] = str(agent.pos)
-        portrayal["Layer"] = 1
-
     return portrayal
 
 
@@ -85,7 +67,6 @@ chart_element = mesa.visualization.ChartModule(
     [
         {"Label": "Predators", "Color": "#AA0000"},
         {"Label": "Prey", "Color": "#0000FF"},
-        {"Label": "GrassPatches", "Color": "#00AA00"},
     ]
 )
 
@@ -93,7 +74,6 @@ chart_element1 = mesa.visualization.ChartModule(
     [
         {"Label": "Predators_energy", "Color": "#AA0000"},
         {"Label": "Prey_energy", "Color": "#0000FF"},
-        {"Label": "GrassPatch_energy", "Color": "#00AA00"},
 
     ]
 )
@@ -129,14 +109,6 @@ model_params = {
         0.1,
         0.005,
         description="The rate at which predator agents reproduce.",
-    ),
-    "grass_regrowth_rate": mesa.visualization.Slider(
-        "Grass Regrowth Rate",
-        PredatorPrey.grass_regrowth_rate,
-        0.0,
-        2.5,
-        0.1,
-        description="Energy increase of a GrassPatch per step due to regrowth"
     ),
     "initial_energy_predators": mesa.visualization.Slider(
         "Energy Predators at Start",
