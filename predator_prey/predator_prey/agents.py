@@ -21,7 +21,7 @@ class Prey(RandomWalker):
                   end="")
         self.random_move()
         # Reduce energy because of step
-        self.energy -= 1
+        self.energy -= self.model.move_energy_prey
         self.age += 1
         if self.model.verbose_1:
             print(str(self.pos) + " [E:" + str(round(self.energy, 1)) + "]")
@@ -71,7 +71,7 @@ class Predator(RandomWalker):
                   end="")
         self.random_move()
         self.age += 1
-        self.energy -= 1
+        self.energy -= self.model.move_energy_prey
         if self.model.verbose_1:
             print(str(self.pos) + " [E:" + str(round(self.energy, 1)) + "]")
 
@@ -81,14 +81,10 @@ class Predator(RandomWalker):
         if len(prey_list_in_cell) > 0:  # if is_prey_list_in_cell
             # eat random prey
             prey_in_cell_to_eat = self.random.choice(prey_list_in_cell)
-
-            if self.energy < self.model.max_energy_predators - prey_in_cell_to_eat.energy:
-                new_energy_predator = self.energy + prey_in_cell_to_eat.energy
-            else:
-                new_energy_predator = self.model.max_energy_predators
+            new_energy_predator = self.energy + prey_in_cell_to_eat.energy
 
             if self.model.verbose_1:
-                print("predator_" + str(self.unique_id) + " eats [E:" + str(round(self.energy, 1)) + "]=>[" + str(
+                print("predator_" + str(self.unique_id) + " eats prey_" + str(prey_in_cell_to_eat.unique_id) + " [E:" + str(round(self.energy, 1)) + "]=>[" + str(
                     round(new_energy_predator, 1)) + "]")
                 print("prey_" + str(prey_in_cell_to_eat.unique_id) + " eaten " + str(
                     prey_in_cell_to_eat.pos) + " [E:" + str(round(prey_in_cell_to_eat.energy, 1)) + "]=>", end="")

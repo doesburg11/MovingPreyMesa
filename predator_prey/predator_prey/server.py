@@ -126,20 +126,6 @@ model_params = {
         0.1,
         description="Energy a prey inherits by initialization of model"
     ),
-    "max_energy_predators": mesa.visualization.Slider(
-        "Maximum Energy Predator",
-        PredatorPrey.max_energy_predators,
-        0.0,
-        80.0,
-        0.1,
-    ),
-    "max_energy_prey": mesa.visualization.Slider(
-        "Maximum Energy Prey",
-        PredatorPrey.max_energy_prey,
-        0.0,
-        50.0,
-        0.1,
-    ),
 
 }
 
